@@ -33,9 +33,15 @@ class MKWebController: NSWindowController {
         let window = NSWindow(contentViewController: viewController)
         super.init(window: window)
         
+        // Clear WKWebView cache so we get an error if the MusicKit script fails to load
+        let websiteDataTypes = NSSet(array: [WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+        let date = Date(timeIntervalSince1970: 0)
+        WKWebsiteDataStore.default().removeData(ofTypes: websiteDataTypes as! Set<String>, modifiedSince: date, completionHandler:{ })
+        
         // Adds message handler used in WKScriptMessageHandler extension
         contentController.add(self, name: "musicKitLoaded")
         contentController.add(self, name: "eventListenerCallback")
+        contentController.add(self, name: "log")
         
         webView.uiDelegate = self
         webView.navigationDelegate = self
@@ -292,6 +298,9 @@ extension MKWebController: WKScriptMessageHandler {
                 callback()
             }
             
+        } else if message.name == "log" {
+            NSLog(message.body as? String ?? "Error logging from JS")
+            
         } else if let completionHandler = promiseDict[message.name] {
             // is promise callback message
             completionHandler(message.body)
@@ -317,5 +326,31 @@ extension MKWebController: WKUIDelegate, WKNavigationDelegate {
         authWindow.showWindow(nil)
         
         return authWebView
+    }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        NSLog("didFailProvisionalNavigation \(error.localizedDescription)")
+    }
+    
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        NSLog("didFailNavigation \(error.localizedDescription)")
+    }
+    
+    func webView(_ webView: WKWebView,
+        decidePolicyFor navigationResponse: WKNavigationResponse,
+        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+
+      guard let statusCode
+          = (navigationResponse.response as? HTTPURLResponse)?.statusCode else {
+        // if there's no http status code to act on, exit and allow navigation
+        decisionHandler(.allow)
+        return
+      }
+
+      if statusCode >= 400 {
+        NSLog("http status error \(statusCode)")
+      }
+
+      decisionHandler(.allow)
     }
 }

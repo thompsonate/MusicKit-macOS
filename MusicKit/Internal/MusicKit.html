@@ -3,9 +3,9 @@
   <meta charset="utf-8">
   <title>MusicKit</title>
 
-  <script type="text/javascript" src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"></script>
-
   <script>
+  var music
+      
   document.addEventListener('musickitloaded', function() {
     // MusicKit global is now defined
     MusicKit.configure({
@@ -15,16 +15,33 @@
         build: '$APP_BUILD'
       }
     });
-  musicKitLoaded();
+    
+    music = MusicKit.getInstance();
+    musicKitLoaded();
   });
-
+    
   function musicKitLoaded() {
+    log('MusicKit Loaded');
     try {
       webkit.messageHandlers.musicKitLoaded.postMessage("");
     } catch(err) {
-      console.log(err);
+      log(err);
     }
   }
+  
+  function log(message) {
+      try {
+        webkit.messageHandlers.log.postMessage(message);
+      } catch(err) {
+        console.log(err);
+      }
+  }
   </script>
+  
+  <script type="text/javascript"
+      src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"
+      onerror="log('Error loading MusicKit JS')"></script>
+
+
 
 </html>

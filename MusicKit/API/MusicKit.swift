@@ -35,7 +35,7 @@ open class MusicKit {
             completionHandler()
         }
         
-//        mkWebController.loadWebView(withDeveloperToken: developerToken, appName: appName, appBuild: appBuild)
+        mkWebController.loadWebView(withDeveloperToken: developerToken, appName: appName, appBuild: appBuild)
     }
     
     /// Returns a promise containing a music user token when a user has authenticated and authorized the app.
