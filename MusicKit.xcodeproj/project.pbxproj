@@ -12,6 +12,7 @@
 		4347843A23F2398000CA50F5 /* ArrayUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4347843923F2398000CA50F5 /* ArrayUtil.swift */; };
 		4347843C23F239A000CA50F5 /* StringFormatUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4347843B23F239A000CA50F5 /* StringFormatUtil.swift */; };
 		4347843E23F239C900CA50F5 /* AuthorizationWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4347843D23F239C900CA50F5 /* AuthorizationWindow.swift */; };
+		436F07C024293C0A0027FACA /* MKDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 436F07BF24293C0A0027FACA /* MKDecoder.swift */; };
 		43792D1123F272EE00272C06 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43792D1023F272EE00272C06 /* Player.swift */; };
 		43792D1323F272F500272C06 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43792D1223F272F500272C06 /* Queue.swift */; };
 		43792D1523F272FD00272C06 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43792D1423F272FD00272C06 /* API.swift */; };
@@ -29,6 +30,7 @@
 		4347843923F2398000CA50F5 /* ArrayUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayUtil.swift; sourceTree = "<group>"; };
 		4347843B23F239A000CA50F5 /* StringFormatUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringFormatUtil.swift; sourceTree = "<group>"; };
 		4347843D23F239C900CA50F5 /* AuthorizationWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationWindow.swift; sourceTree = "<group>"; };
+		436F07BF24293C0A0027FACA /* MKDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKDecoder.swift; sourceTree = "<group>"; };
 		43792D1023F272EE00272C06 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		43792D1223F272F500272C06 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		43792D1423F272FD00272C06 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 			children = (
 				43901EE323F1E4FD00939D21 /* MusicKit.html */,
 				43901EE123F1E4ED00939D21 /* MKWebController.swift */,
+				436F07BF24293C0A0027FACA /* MKDecoder.swift */,
 				4347843D23F239C900CA50F5 /* AuthorizationWindow.swift */,
 			);
 			path = Internal;
@@ -208,6 +211,7 @@
 				43901EEF23F1E82A00939D21 /* QueueManager.swift in Sources */,
 				4347843A23F2398000CA50F5 /* ArrayUtil.swift in Sources */,
 				4347843C23F239A000CA50F5 /* StringFormatUtil.swift in Sources */,
+				436F07C024293C0A0027FACA /* MKDecoder.swift in Sources */,
 				43901EE223F1E4ED00939D21 /* MKWebController.swift in Sources */,
 				43792D1723F2730300272C06 /* Library.swift in Sources */,
 				4347843823F2388600CA50F5 /* MusicKitUtils.swift in Sources */,

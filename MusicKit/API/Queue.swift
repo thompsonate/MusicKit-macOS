@@ -24,6 +24,7 @@ open class Queue {
         mkWebController.evaluateJavaScript(
             "MusicKit.getInstance().player.queue.isEmpty",
             type: Bool.self,
+            decodingStrategy: .typeCasting,
             completionHandler: completionHandler)
     }
     
@@ -32,6 +33,7 @@ open class Queue {
         mkWebController.evaluateJavaScript(
             "JSON.stringify(MusicKit.getInstance().player.queue.items)",
             type: [MediaItem].self,
+            decodingStrategy: .jsonString,
             completionHandler: completionHandler)
     }
     
@@ -40,6 +42,7 @@ open class Queue {
         mkWebController.evaluateJavaScript(
             "MusicKit.getInstance().player.queue.length",
             type: Int.self,
+            decodingStrategy: .typeCasting,
             completionHandler: completionHandler)
     }
     
@@ -58,6 +61,7 @@ open class Queue {
         mkWebController.evaluateJavaScript(
             "MusicKit.getInstance().player.queue.position",
             type: Int.self,
+            decodingStrategy: .typeCasting,
             completionHandler: completionHandler)
     }
     

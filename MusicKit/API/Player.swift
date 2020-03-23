@@ -22,6 +22,7 @@ open class Player {
     public func getCurrentPlaybackDuration(completionHandler: @escaping (Int?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackDuration",
                                            type: Int.self,
+                                           decodingStrategy: .typeCasting,
                                            completionHandler: completionHandler)
     }
     
@@ -29,6 +30,7 @@ open class Player {
     public func getCurrentPlaybackProgress(completionHandler: @escaping (Double?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackProgress",
                                            type: Double.self,
+                                           decodingStrategy: .typeCasting,
                                            completionHandler: completionHandler)
     }
     
@@ -36,12 +38,14 @@ open class Player {
     public func getCurrentPlaybackTime(completionHandler: @escaping (Int?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackTime",
                                            type: Int.self,
+                                           decodingStrategy: .typeCasting,
                                            completionHandler: completionHandler)
     }
     
     public func getCurrentPlaybackTimeRemaining(completionHandler: @escaping (Int?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackTimeRemaining",
                                            type: Int.self,
+                                           decodingStrategy: .typeCasting,
                                            completionHandler: completionHandler)
     }
 
@@ -50,6 +54,7 @@ open class Player {
     public func getIsPlaying(completionHandler: @escaping (Bool?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().player.isPlaying",
                                            type: Bool.self,
+                                           decodingStrategy: .typeCasting,
                                            completionHandler: completionHandler)
     }
     
@@ -57,6 +62,7 @@ open class Player {
     public func getNowPlayingItem(completionHandler: @escaping (MediaItem?) -> Void) {
         mkWebController.evaluateJavaScript("JSON.stringify(MusicKit.getInstance().player.nowPlayingItem)",
                                            type: MediaItem.self,
+                                           decodingStrategy: .jsonString,
                                            completionHandler: completionHandler)
     }
     
@@ -74,6 +80,7 @@ open class Player {
     public func getPlaybackState(completionHandler: @escaping (PlaybackStates?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().player.playbackState",
                                            type: PlaybackStates.self,
+                                           decodingStrategy: .enumType,
                                            completionHandler: completionHandler)
     }
     

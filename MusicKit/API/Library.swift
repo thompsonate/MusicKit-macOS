@@ -21,6 +21,7 @@ open class Library {
         let jsString = "MusicKit.getInstance().api.library.songs(\(ids.count > 0 ? ids.description : "null"), null)"
         mkWebController.evaluateJavaScriptWithPromise(jsString,
                                                       type: [Song].self,
+                                                      decodingStrategy: .jsonSerialization,
                                                       completionHandler: completionHandler)
     }
     
@@ -31,6 +32,7 @@ open class Library {
         let jsString = "MusicKit.getInstance().api.library.songs(null, { limit: \(limit), offset: \(offset) })"
         mkWebController.evaluateJavaScriptWithPromise(jsString,
                                                       type: [Song].self,
+                                                      decodingStrategy: .jsonSerialization,
                                                       completionHandler: completionHandler)
     }
 }

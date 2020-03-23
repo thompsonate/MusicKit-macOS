@@ -13,6 +13,7 @@ import WebKit
 class MKWebController: NSWindowController {
     private var webView: WKWebView!
     private var contentController = WKUserContentController()
+    private var decoder = MKDecoder()
     
     private var promiseDict: [String: (Any) -> Void] = [:]
     private var eventListenerDict: [String: [() -> Void]] = [:]
@@ -94,7 +95,7 @@ class MKWebController: NSWindowController {
     
     
     
-    //--MARK: Evaluate JavaScript
+    // MARK: Evaluate JavaScript
     
     /// Evaluates JavaScript String.
     func evaluateJavaScript(_ javaScriptString: String, completionHandler: (() -> Void)? = nil) {
@@ -108,16 +109,21 @@ class MKWebController: NSWindowController {
     /// Evaluates JavaScript and passes decoded return value to completionHandler.
     func evaluateJavaScript<T: Decodable>(_ javaScriptString: String,
                                           type: T.Type,
+                                          decodingStrategy: MKDecoder.Strategy,
                                           completionHandler: @escaping (T?) -> Void) {
         webView.evaluateJavaScript(javaScriptString) { (response, error) in
-            guard let response = response,
-                let decodedResponse = self.decodeJSResponse(response, to: type) else
-            {
+            guard let response = response else {
                 completionHandler(nil)
                 if let error = error { NSLog(error.localizedDescription) }
                 return
             }
-            completionHandler(decodedResponse)
+            
+            do {
+                let decodedResponse = try self.decoder.decodeJSResponse(response, to: type, withStrategy: decodingStrategy)
+                completionHandler(decodedResponse)
+            } catch {
+                NSLog(error.localizedDescription)
+            }
         }
     }
     
@@ -148,6 +154,7 @@ class MKWebController: NSWindowController {
     /// Evaluates JavaScript for Promise and passes decoded response to completionHandler.
     func evaluateJavaScriptWithPromise<T: Decodable>(_ javaScriptString: String,
                                                      type: T.Type,
+                                                     decodingStrategy strategy: MKDecoder.Strategy,
                                                      completionHandler: ((T?) -> Void)?) {
         guard let completionHandler = completionHandler else {
             evaluateJavaScript(javaScriptString)
@@ -160,11 +167,14 @@ class MKWebController: NSWindowController {
 
         // Add completionHandler to dictionary to run after the message handler is called
         promiseDict[key] = { response in
-            guard let decodedResponse = self.decodeJSResponse(response, to: type) else {
+            // handle promise response
+            do {
+                let decodedResponse = try self.decoder.decodeJSResponse(response, to: type, withStrategy: strategy)
+                completionHandler(decodedResponse)
+            } catch {
+                NSLog(error.localizedDescription)
                 completionHandler(nil)
-                return
             }
-            completionHandler(decodedResponse)
         }
 
         evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: true))
@@ -172,70 +182,7 @@ class MKWebController: NSWindowController {
     
     
     
-    
-    
-    private func decodeJSResponse<T: Decodable>(_ response: Any, to type: T.Type) -> T? {
-        if JSONSerialization.isValidJSONObject(response) {
-            // top level object is NSArray or NSDictionary
-            do {
-                let responseData = try JSONSerialization.data(withJSONObject: response, options: [])
-                return try JSONDecoder().decode(type.self, from: responseData)
-            } catch {
-                NSLog("Error decoding JSON data: \(error)")
-                return nil
-            }
-        } else if let castResponse = response as? T {
-            // JSONDecoder doesn't work with fragments https://bugs.swift.org/browse/SR-6163
-            // works on raw JSON types (e.g. string, boolean, number)
-            return castResponse
-            
-        } else if let decodedEnumType = decodeAsEnumType(response, to: type) {
-            // casting doesn't work with RawRepresentable Enums, but this does
-            return decodedEnumType
-            
-        } else if let decodedJSON = decodeAsJSONString(response, to: type) {
-            // for use with JSON.stringify() in the JS code
-            return decodedJSON
-            
-        } else {
-            NSLog("Error decoding JS response")
-            return nil
-        }
-    }
-    
-    
-    
-    private func decodeAsEnumType<T: Decodable>(_ response: Any, to type: T.Type) -> T? {
-        // if RawType is Int
-        if let fragmentArray = "[\(response)]".data(using: .utf8),
-            let decodedFragment = try? JSONDecoder().decode([T].self, from: fragmentArray)
-        {
-            return decodedFragment[0]
-        // if RawType is String
-        } else if let fragmentArray = "[\"\(response)\"]".data(using: .utf8),
-            let decodedFragment = try? JSONDecoder().decode([T].self, from: fragmentArray)
-        {
-            return decodedFragment[0]
-        } else {
-            return nil
-        }
-    }
-    
-    
-    
-    private func decodeAsJSONString<T: Decodable>(_ response: Any, to type: T.Type) -> T? {
-        guard let jsonString = response as? String else { return nil }
-        do {
-            let responseData = jsonString.data(using: .utf8)
-            return try JSONDecoder().decode(type.self, from: responseData!)
-            
-        } catch {
-            NSLog("Error decoding JSON data: \(error)")
-            return nil
-        }
-    }
-    
-    
+    // MARK: Boilerplate JavaScript
     
     private func postCallback(named name: String) -> String {
         return """
@@ -314,7 +261,8 @@ extension MKWebController: WKScriptMessageHandler {
 
 
 
-extension MKWebController: WKUIDelegate, WKNavigationDelegate {
+// MARK: UI Delegate
+extension MKWebController: WKUIDelegate {
     func webView(
         _ webView: WKWebView,
         createWebViewWith configuration: WKWebViewConfiguration,
@@ -327,7 +275,10 @@ extension MKWebController: WKUIDelegate, WKNavigationDelegate {
         
         return authWebView
     }
-    
+}
+
+// MARK: Navigation Delegate
+extension MKWebController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         NSLog("didFailProvisionalNavigation \(error.localizedDescription)")
     }

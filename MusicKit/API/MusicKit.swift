@@ -42,6 +42,7 @@ open class MusicKit {
     public func authorize(completionHandler: ((String?) -> Void)? = nil) {
         mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().authorize()",
                                                       type: String.self,
+                                                      decodingStrategy: .typeCasting,
                                                       completionHandler: completionHandler)
     }
     
@@ -54,6 +55,7 @@ open class MusicKit {
     public func getIsAuthorized(completionHandler: @escaping (Bool?) -> Void) {
         mkWebController.evaluateJavaScript("MusicKit.getInstance().isAuthorized",
                                            type: Bool.self,
+                                           decodingStrategy: .typeCasting,
                                            completionHandler: completionHandler)
     }
     
