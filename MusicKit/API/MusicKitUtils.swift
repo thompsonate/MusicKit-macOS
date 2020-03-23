@@ -164,7 +164,7 @@ public struct Song: Codable {
 public struct SongAttributes: Codable {
     public let albumName: String
     public let artistName: String
-    public let artwork: Artwork
+    public let artwork: Artwork?
     public let durationInMillis: Int
     public let name: String
     // nil if song is not playable (i.e. removed from Apple Music Catalog)
@@ -178,7 +178,7 @@ public struct SongAttributes: Codable {
 
 
 public struct Artwork: Codable {
-    public let height: Int
-    public let width: Int
+    public let height: Int?
+    public let width: Int?
     public let url: String
 }
