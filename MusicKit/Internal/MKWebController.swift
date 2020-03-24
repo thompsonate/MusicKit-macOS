@@ -114,7 +114,9 @@ class MKWebController: NSWindowController {
     {
         webView.evaluateJavaScript(javaScriptString) { (response, error) in
             if let error = error {
-                onError(JSError(underlyingError: error, jsString: javaScriptString, result: response))
+                let onErrorFiltered = self.closureFilteringUnsupportedTypeError(errorClosure: onError)
+                let errorWithDetails = JSError(underlyingError: error, jsString: javaScriptString, result: response)
+                onErrorFiltered(errorWithDetails)
             } else {
                 onSuccess?()
             }
@@ -167,8 +169,7 @@ class MKWebController: NSWindowController {
             onSuccess()
         }
         
-        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: false),
-                           onError: closureFilteringUnsupportedTypeError(errorClosure: onError))
+        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: false), onError: onError)
     }
     
     
@@ -201,8 +202,7 @@ class MKWebController: NSWindowController {
                                 onError: onError)
         }
 
-        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: true),
-                           onError: closureFilteringUnsupportedTypeError(errorClosure: onError))
+        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: true), onError: onError)
     }
     
     
