@@ -40,15 +40,13 @@ class MKDecoder {
                     throw DecodingError(underlyingError: error, response: response, decodingStrategy: strategy)
                 }
             } else {
-                throw DecodingError(underlyingError: Error.invalidJSONObject,
-                                    response: response,
-                                    decodingStrategy: strategy)
+                throw DecodingError(underlyingError: .invalidJSONObject, response: response, decodingStrategy: strategy)
             }
             
         case .jsonString:
             // For use with JSON.stringify() in the JS code
             guard let jsonString = response as? String else {
-                throw DecodingError(underlyingError: Error.unexpectedType(expected: "String"),
+                throw DecodingError(underlyingError: .unexpectedType(expected: "String"),
                                     response: response,
                                     decodingStrategy: strategy)
             }
@@ -66,7 +64,7 @@ class MKDecoder {
             if let castResponse = response as? T {
                 return castResponse
             } else {
-                throw DecodingError(underlyingError: Error.typeCastingFailed(type: String(describing: type)),
+                throw DecodingError(underlyingError: .typeCastingFailed(type: String(describing: type)),
                                     response: response,
                                     decodingStrategy: strategy)
             }
@@ -93,7 +91,7 @@ class MKDecoder {
                     throw DecodingError(underlyingError: error, response: response, decodingStrategy: strategy)
                 }
             } else {
-                throw DecodingError(underlyingError: Error.unexpectedType(expected: "Int or String"),
+                throw DecodingError(underlyingError: .unexpectedType(expected: "Int or String"),
                                     response: response,
                                     decodingStrategy: strategy)
             }
@@ -102,35 +100,49 @@ class MKDecoder {
     
     
     /// A wrapper for decoding errors to bundle additional information.
-    struct DecodingError: Swift.Error, CustomStringConvertible {
-        let underlyingError: Swift.Error
+    struct DecodingError: Error, CustomStringConvertible {
+        let underlyingError: Error
         let response: Any
         let decodingStrategy: Strategy
+        var jsString: String? = nil
+        
+        init(underlyingError: Error, response: Any, decodingStrategy: Strategy) {
+            self.underlyingError = underlyingError
+            self.response = response
+            self.decodingStrategy = decodingStrategy
+        }
+        
+        init(underlyingError: DecodingError.Internal, response: Any, decodingStrategy: Strategy) {
+            self.underlyingError = underlyingError
+            self.response = response
+            self.decodingStrategy = decodingStrategy
+        }
         
         var description: String {
             return """
             Error decoding JavaScript response:
                 Underlying error: \(String(describing: underlyingError))
+                JavaScript input: \(jsString ?? "not available")
                 JavaScript response: \(String(describing: response))
                 Decoding strategy: \(String(describing: decodingStrategy))
             """
         }
-    }
-    
-    /// Errors specific to MKDecoder's implementation
-    enum Error: Swift.Error, CustomStringConvertible {
-        case invalidJSONObject
-        case unexpectedType(expected: String)
-        case typeCastingFailed(type: String)
         
-        var description: String {
-            switch self {
-            case .invalidJSONObject:
-                return "Failed to decode invalid JSON object"
-            case .unexpectedType(let expected):
-                return "Unexpected Type, was expecting \(expected)"
-            case .typeCastingFailed(let type):
-                return "Failed to decode JSON by type casting to \(type)"
+        /// Errors specific to MKDecoder's implementation
+        enum Internal: Error, CustomStringConvertible {
+            case invalidJSONObject
+            case unexpectedType(expected: String)
+            case typeCastingFailed(type: String)
+            
+            var description: String {
+                switch self {
+                case .invalidJSONObject:
+                    return "Failed to decode invalid JSON object"
+                case .unexpectedType(let expected):
+                    return "Unexpected Type, was expecting \(expected)"
+                case .typeCastingFailed(let type):
+                    return "Failed to decode JSON by type casting to \(type)"
+                }
             }
         }
     }
