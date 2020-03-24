@@ -21,7 +21,7 @@ open class Library {
         onSuccess: @escaping ([Song]) -> Void,
         onError: @escaping (Error) -> Void)
     {
-        let jsString = "MusicKit.getInstance().api.library.songs(\(ids.count > 0 ? ids.description : "null"), null)"
+        let jsString = "music.api.library.songs(\(ids.count > 0 ? ids.description : "null"), null)"
         mkWebController.evaluateJavaScriptWithPromise(
             jsString,
             type: [Song].self,
@@ -37,7 +37,7 @@ open class Library {
         onSuccess: @escaping ([Song]) -> Void,
         onError: @escaping (Error) -> Void)
     {
-        let jsString = "MusicKit.getInstance().api.library.songs(null, { limit: \(limit), offset: \(offset) })"
+        let jsString = "music.api.library.songs(null, { limit: \(limit), offset: \(offset) })"
         mkWebController.evaluateJavaScriptWithPromise(
             jsString,
             type: [Song].self,

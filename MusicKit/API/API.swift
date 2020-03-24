@@ -64,7 +64,7 @@ open class API {
         let paramsString = params.joined(separator: ", ")
         
         mkWebController.evaluateJavaScriptWithPromise(
-            "MusicKit.getInstance().api.addToLibrary({ \(paramsString) })",
+            "music.api.addToLibrary({ \(paramsString) })",
             onSuccess: onSuccess,
             onError: onError)
     }

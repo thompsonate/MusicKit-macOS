@@ -97,7 +97,7 @@ class MKWebController: NSWindowController {
             eventListenerDict[eventName] = [callback]
         }
         evaluateJavaScript("""
-            MusicKit.getInstance().addEventListener('\(eventName)', function() {
+            music.addEventListener('\(eventName)', function() {
                 \(postCallback(named: eventName))
             })
             """)
