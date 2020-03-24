@@ -25,7 +25,7 @@ enum RemoteCommandController {
         
         remoteCommandCenter.togglePlayPauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
             MusicKit.shared.player.getIsPlaying { isPlaying in
-                if isPlaying ?? false {
+                if isPlaying {
                     MusicKit.shared.player.pause()
                 } else {
                     MusicKit.shared.player.play()
@@ -59,8 +59,6 @@ enum NowPlayingInfoManager {
     static func setup() {
         MusicKit.shared.addEventListener(event: .playbackStateDidChange) {
             MusicKit.shared.player.getPlaybackState(completionHandler: { state in
-                guard let state = state else { return }
-                
                 switch state {
                 case .playing:
                     updateInfo()
@@ -98,13 +96,10 @@ enum NowPlayingInfoManager {
                 nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = nowPlayingItem?.attributes.albumName
                 nowPlayingInfo[MPMediaItemPropertyArtist] = nowPlayingItem?.attributes.artistName
                 nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = nowPlayingItem?.attributes.durationInSecs
-                
-                if let playbackTime = playbackTime {
-                    nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = NSNumber(value: playbackTime)
-                }
+                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = NSNumber(value: playbackTime)
                 
                 let artwork = MPMediaItemArtwork(boundsSize: CGSize(width: 80, height: 80), requestHandler: { size -> NSImage in
-                    if let artwork = nowPlayingItem?.attributes.artwork.imageSmall {
+                    if let artwork = nowPlayingItem?.attributes.artwork?.imageSmall {
                         return artwork
                     } else {
                         return NSImage(named: NSImage.applicationIconName)!

@@ -20,23 +20,36 @@ open class API {
     }
     
     
-    public func addToLibrary(songs: [MediaID], completionHandler: (() -> Void)? = nil) {
-        addToLibrary(songs: songs, albums: nil, playlists: nil, completionHandler: completionHandler)
+    public func addToLibrary(
+        songs: [MediaID],
+        onSuccess: (() -> Void)? = nil,
+        onError: @escaping (Error) -> Void)
+    {
+        addToLibrary(songs: songs, albums: nil, playlists: nil, onSuccess: onSuccess, onError: onError)
     }
     
-    public func addToLibrary(albums: [MediaID], completionHandler: (() -> Void)? = nil) {
-        addToLibrary(songs: nil, albums: albums, playlists: nil, completionHandler: completionHandler)
+    public func addToLibrary(
+        albums: [MediaID],
+        onSuccess: (() -> Void)? = nil,
+        onError: @escaping (Error) -> Void)
+    {
+        addToLibrary(songs: nil, albums: albums, playlists: nil, onSuccess: onSuccess, onError: onError)
     }
     
-    public func addToLibrary(playlists: [MediaID], completionHandler: (() -> Void)? = nil) {
-        addToLibrary(songs: nil, albums: nil, playlists: playlists, completionHandler: completionHandler)
+    public func addToLibrary(
+        playlists: [MediaID],
+        onSuccess: (() -> Void)? = nil,
+        onError: @escaping (Error) -> Void)
+    {
+        addToLibrary(songs: nil, albums: nil, playlists: playlists, onSuccess: onSuccess, onError: onError)
     }
     
     public func addToLibrary(
         songs: [MediaID]?,
         albums: [MediaID]?,
         playlists: [MediaID]?,
-        completionHandler: (() -> Void)? = nil)
+        onSuccess: (() -> Void)? = nil,
+        onError: @escaping (Error) -> Void)
     {
         var params = [String]()
         if let songs = songs {
@@ -49,8 +62,10 @@ open class API {
             params.append("playlists: \(playlists.description)")
         }
         let paramsString = params.joined(separator: ", ")
+        
         mkWebController.evaluateJavaScriptWithPromise(
             "MusicKit.getInstance().api.addToLibrary({ \(paramsString) })",
-            completionHandler: completionHandler)
+            onSuccess: onSuccess,
+            onError: onError)
     }
 }

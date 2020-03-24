@@ -18,6 +18,16 @@ class MKWebController: NSWindowController {
     private var promiseDict: [String: (Any) -> Void] = [:]
     private var eventListenerDict: [String: [() -> Void]] = [:]
     
+    private static var defaultErrorHandler: (Error) -> Void {
+        return { error in
+            #if DEBUG
+            print(error)
+            #else
+            NSLog(String(describing: error))
+            #endif
+        }
+    }
+    
     var musicKitDidLoad: (() -> Void)?
     
     init() {
@@ -98,9 +108,16 @@ class MKWebController: NSWindowController {
     // MARK: Evaluate JavaScript
     
     /// Evaluates JavaScript String.
-    func evaluateJavaScript(_ javaScriptString: String, completionHandler: (() -> Void)? = nil) {
-        webView.evaluateJavaScript(javaScriptString) { (_, _) in
-            completionHandler?()
+    func evaluateJavaScript(_ javaScriptString: String,
+                            onSuccess: (() -> Void)? = nil,
+                            onError: @escaping (Error) -> Void = defaultErrorHandler)
+    {
+        webView.evaluateJavaScript(javaScriptString) { (response, error) in
+            if let error = error {
+                onError(JSError(underlyingError: error, jsString: javaScriptString, result: response))
+            } else {
+                onSuccess?()
+            }
         }
     }
     
@@ -110,19 +127,24 @@ class MKWebController: NSWindowController {
     func evaluateJavaScript<T: Decodable>(_ javaScriptString: String,
                                           type: T.Type,
                                           decodingStrategy: MKDecoder.Strategy,
-                                          completionHandler: @escaping (T?) -> Void) {
+                                          onSuccess: ((T) -> Void)?,
+                                          onError: @escaping (Error) -> Void = defaultErrorHandler)
+    {
+        guard let onSuccess = onSuccess else {
+            evaluateJavaScript(javaScriptString, onError: onError)
+            return
+        }
+        
         webView.evaluateJavaScript(javaScriptString) { (response, error) in
-            guard let response = response else {
-                completionHandler(nil)
-                if let error = error { NSLog(error.localizedDescription) }
-                return
-            }
-            
-            do {
-                let decodedResponse = try self.decoder.decodeJSResponse(response, to: type, withStrategy: decodingStrategy)
-                completionHandler(decodedResponse)
-            } catch {
-                NSLog(error.localizedDescription)
+            if let error = error {
+                onError(JSError(underlyingError: error, jsString: javaScriptString, result: response))
+            } else {
+                do {
+                    let decodedResponse = try self.decoder.decodeJSResponse(response!, to: type, withStrategy: decodingStrategy)
+                    onSuccess(decodedResponse)
+                } catch {
+                    onError(error)
+                }
             }
         }
     }
@@ -131,9 +153,11 @@ class MKWebController: NSWindowController {
     
     /// Evaluates JavaScript for void Promise and calls completionHandler when Promise is fulfilled.
     func evaluateJavaScriptWithPromise(_ javaScriptString: String,
-                                       completionHandler: (() -> Void)?) {
-        guard let completionHandler = completionHandler else {
-            evaluateJavaScript(javaScriptString)
+                                       onSuccess: (() -> Void)?,
+                                       onError: @escaping (Error) -> Void = defaultErrorHandler)
+    {
+        guard let onSuccess = onSuccess else {
+            evaluateJavaScript(javaScriptString, onError: onError)
             return
         }
         
@@ -143,10 +167,11 @@ class MKWebController: NSWindowController {
         
         // Add completionHandler to dictionary to run after the message handler is called
         promiseDict[key] = { _ in
-            completionHandler()
+            onSuccess()
         }
         
-        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: false))
+        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: false),
+                           onError: closureFilteringUnsupportedTypeError(errorClosure: onError))
     }
     
     
@@ -155,9 +180,11 @@ class MKWebController: NSWindowController {
     func evaluateJavaScriptWithPromise<T: Decodable>(_ javaScriptString: String,
                                                      type: T.Type,
                                                      decodingStrategy strategy: MKDecoder.Strategy,
-                                                     completionHandler: ((T?) -> Void)?) {
-        guard let completionHandler = completionHandler else {
-            evaluateJavaScript(javaScriptString)
+                                                     onSuccess: ((T) -> Void)?,
+                                                     onError: @escaping (Error) -> Void = defaultErrorHandler)
+    {
+        guard let onSuccess = onSuccess else {
+            evaluateJavaScript(javaScriptString, onError: onError)
             return
         }
 
@@ -170,14 +197,47 @@ class MKWebController: NSWindowController {
             // handle promise response
             do {
                 let decodedResponse = try self.decoder.decodeJSResponse(response, to: type, withStrategy: strategy)
-                completionHandler(decodedResponse)
+                onSuccess(decodedResponse)
             } catch {
-                NSLog(error.localizedDescription)
-                completionHandler(nil)
+                onError(error)
             }
         }
 
-        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: true))
+        evaluateJavaScript(javaScriptString + promise(named: key, returnsValue: true),
+                           onError: closureFilteringUnsupportedTypeError(errorClosure: onError))
+    }
+    
+    
+    
+    /// Filters out error thrown when evaluating JavaScript returns a promise.
+    private func closureFilteringUnsupportedTypeError(errorClosure: @escaping (Error) -> Void) -> (Error) -> Void {
+        return { error in
+            if let error = error as? JSError,
+                let underlyingError = error.underlyingError as? WKError,
+                underlyingError.code == WKError.javaScriptResultTypeIsUnsupported
+            {
+                // do nothing
+            } else {
+                errorClosure(error)
+            }
+        }
+    }
+    
+    
+    
+    struct JSError: Error, CustomStringConvertible {
+        let underlyingError: Error
+        let jsString: String
+        let result: Any?
+
+        var description: String {
+            return """
+            Evaluation of JavaScript string produced an error:
+                \(String(describing: underlyingError))
+                JavaScript string: \(jsString)
+                result: \(String(describing: result))
+            """
+        }
     }
     
     

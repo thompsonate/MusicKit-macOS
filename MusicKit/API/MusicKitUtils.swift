@@ -79,7 +79,7 @@ public struct MediaItem: Codable {
 public struct MediaItemAttributes: Codable {
     public let albumName: String
     public let artistName: String
-    public let artwork: MediaItemArtwork
+    public let artwork: MediaItemArtwork?
     public let composerName: String?
     public let contentRating: ContentRating?
     public let discNumber: Int?

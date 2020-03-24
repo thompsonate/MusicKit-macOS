@@ -39,43 +39,51 @@ open class MusicKit {
     }
     
     /// Returns a promise containing a music user token when a user has authenticated and authorized the app.
-    public func authorize(completionHandler: ((String?) -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().authorize()",
-                                                      type: String.self,
-                                                      decodingStrategy: .typeCasting,
-                                                      completionHandler: completionHandler)
+    public func authorize(onSuccess: ((String) -> Void)? = nil, onError: @escaping (Error) -> Void) {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().authorize()",
+            type: String.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: onSuccess,
+            onError: onError)
     }
     
     /// Unauthorizes the app for the current user.
     public func unauthorize(completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().unauthorize()",
-                                                      completionHandler: completionHandler)
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().unauthorize()",
+            onSuccess: completionHandler)
     }
     
-    public func getIsAuthorized(completionHandler: @escaping (Bool?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().isAuthorized",
-                                           type: Bool.self,
-                                           decodingStrategy: .typeCasting,
-                                           completionHandler: completionHandler)
+    public func getIsAuthorized(completionHandler: @escaping (Bool) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().isAuthorized",
+            type: Bool.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
     /// Sets a music player's playback queue using a URL.
-    public func setQueue(url: String, completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().setQueue({ url: '\(url)' })",
-            completionHandler: completionHandler)
+    public func setQueue(url: String, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().setQueue({ url: '\(url)' })",
+            onSuccess: onSuccess,
+            onError: onError)
     }
     
     /// Sets a music player's playback queue to a single Song.
-    public func setQueue(song: Song, completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().setQueue({ song: '\(song.id)' })") {
-            completionHandler?()
-        }
+    public func setQueue(song: Song, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().setQueue({ song: '\(song.id)' })",
+            onSuccess: onSuccess,
+            onError: onError)
     }
     
-    public func setQueue(items: [MediaID], completionHandler: (() -> Void)? = nil) {
+    public func setQueue(items: [MediaID], onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
         mkWebController.evaluateJavaScriptWithPromise(
             "MusicKit.getInstance().setQueue({ songs: \(items.description) })",
-            completionHandler: completionHandler)
+            onSuccess: onSuccess,
+            onError: onError)
     }
     
     

@@ -19,69 +19,80 @@ open class Player {
     
     // MARK: Properties
     /// The current playback duration.
-    public func getCurrentPlaybackDuration(completionHandler: @escaping (Int?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackDuration",
-                                           type: Int.self,
-                                           decodingStrategy: .typeCasting,
-                                           completionHandler: completionHandler)
+    public func getCurrentPlaybackDuration(completionHandler: @escaping (Int) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().player.currentPlaybackDuration",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
     /// The current playback progress.
-    public func getCurrentPlaybackProgress(completionHandler: @escaping (Double?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackProgress",
-                                           type: Double.self,
-                                           decodingStrategy: .typeCasting,
-                                           completionHandler: completionHandler)
+    public func getCurrentPlaybackProgress(completionHandler: @escaping (Double) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().player.currentPlaybackProgress",
+            type: Double.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
     /// The current position of the playhead.
-    public func getCurrentPlaybackTime(completionHandler: @escaping (Int?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackTime",
-                                           type: Int.self,
-                                           decodingStrategy: .typeCasting,
-                                           completionHandler: completionHandler)
+    public func getCurrentPlaybackTime(completionHandler: @escaping (Int) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().player.currentPlaybackTime",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
-    public func getCurrentPlaybackTimeRemaining(completionHandler: @escaping (Int?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.currentPlaybackTimeRemaining",
-                                           type: Int.self,
-                                           decodingStrategy: .typeCasting,
-                                           completionHandler: completionHandler)
+    public func getCurrentPlaybackTimeRemaining(completionHandler: @escaping (Int) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().player.currentPlaybackTimeRemaining",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
 
     
     /// A Boolean value indicating whether the player is currently playing.
-    public func getIsPlaying(completionHandler: @escaping (Bool?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.isPlaying",
-                                           type: Bool.self,
-                                           decodingStrategy: .typeCasting,
-                                           completionHandler: completionHandler)
+    public func getIsPlaying(completionHandler: @escaping (Bool) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().player.isPlaying",
+            type: Bool.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
     /// The currently-playing media item, or the media item, within an queue, that you have designated to begin playback.
     public func getNowPlayingItem(completionHandler: @escaping (MediaItem?) -> Void) {
-        mkWebController.evaluateJavaScript("JSON.stringify(MusicKit.getInstance().player.nowPlayingItem)",
-                                           type: MediaItem.self,
-                                           decodingStrategy: .jsonString,
-                                           completionHandler: completionHandler)
+        mkWebController.evaluateJavaScript(
+            "JSON.stringify(MusicKit.getInstance().player.nowPlayingItem)",
+            type: MediaItem?.self,
+            decodingStrategy: .jsonString,
+            onSuccess: completionHandler)
     }
     
-//    /// The index of the now playing item in the current playback queue.
-//    public func getNowPlayingItemIndex(completionHandler: @escaping (Int?) -> Void) {
-//
-//    }
-//
-//    /// The current playback rate for the player.
-//    public func getPlaybackRate(completionHandler: @escaping (Int?) -> Void) {
-//
-//    }
+    /// The index of the now playing item in the current playback queue. If there is no now playing item, the index is -1.
+    public func getNowPlayingItemIndex(completionHandler: @escaping (Int) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "music.player.nowPlayingItemIndex",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
+    }
+    
+    //    /// The current playback rate for the player.
+    //    public func getPlaybackRate(completionHandler: @escaping (Int?) -> Void) {
+    //
+    //    }
     
     /// The current playback state of the music player.
-    public func getPlaybackState(completionHandler: @escaping (PlaybackStates?) -> Void) {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.playbackState",
-                                           type: PlaybackStates.self,
-                                           decodingStrategy: .enumType,
-                                           completionHandler: completionHandler)
+    public func getPlaybackState(completionHandler: @escaping (PlaybackStates) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "MusicKit.getInstance().player.playbackState",
+            type: PlaybackStates.self,
+            decodingStrategy: .enumType,
+            onSuccess: completionHandler)
     }
     
 //    /// A Boolean value that indicates whether a playback target is available.
@@ -108,8 +119,9 @@ open class Player {
     
     /// Begins playing the media item at the specified index in the queue immediately.
     public func changeToMediaAtIndex(_ index: Int, completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().player.changeToMediaAtIndex(\(index))",
-            completionHandler: completionHandler)
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().player.changeToMediaAtIndex(\(index))",
+            onSuccess: completionHandler)
     }
     
 //    /// Begins playing the media item in the queue immediately.
@@ -133,8 +145,7 @@ open class Player {
     }
     
     public func togglePlayPause() {
-        MusicKit.shared.player.getPlaybackState { playbackState in
-            guard let playbackState = playbackState else { return }
+        getPlaybackState { playbackState in
             switch playbackState {
             case .playing:
                 MusicKit.shared.player.pause()
@@ -146,34 +157,44 @@ open class Player {
         }
     }
     
-    /// Prepares a music player for playback.
-    public func prepareToPlay(completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().player.prepareToPlay()",
-                                                      completionHandler: completionHandler)
-    }
+//    /// Prepares a music player for playback.
+//    public func prepareToPlay(mediaItem: MediaItem, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+//        mkWebController.evaluateJavaScriptWithPromise(
+//            "MusicKit.getInstance().player.prepareToPlay()",
+//            onSuccess: onSuccess,
+//            onError: onError)
+//    }
     
     /// Sets the playback point to a specified time.
     public func seek(to time: Double, completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().player.seekToTime(\(time))",
-            completionHandler: completionHandler)
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().player.seekToTime(\(time));",
+            onSuccess: completionHandler)
     }
     
-    /// Displays the playback target picker if a playback target is available.
-    public func showPlaybackTargetPicker() {
-        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.showPlaybackTargetPicker();")
-    }
+//    /// Displays the playback target picker if a playback target is available.
+//    public func showPlaybackTargetPicker() {
+//        mkWebController.evaluateJavaScript("MusicKit.getInstance().player.showPlaybackTargetPicker();")
+//    }
     
     /// Starts playback of the next media item in the playback queue.
-    public func skipToNextItem(completionHandler: (() -> Void)? = nil) {
-        mkWebController.evaluateJavaScriptWithPromise("MusicKit.getInstance().player.skipToNextItem()",
-                                                      completionHandler: completionHandler)
+    /// Returns the current media item position.
+    public func skipToNextItem(completionHandler: ((Int) -> Void)? = nil) {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "MusicKit.getInstance().player.skipToNextItem();",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
     /// Starts playback of the previous media item in the playback queue.
-    public func skipToPreviousItem(completionHandler: (() -> Void)? = nil) {
+    /// Returns the current media position.
+    public func skipToPreviousItem(completionHandler: ((Int) -> Void)? = nil) {
         mkWebController.evaluateJavaScriptWithPromise(
-            "MusicKit.getInstance().player.skipToPreviousItem()",
-            completionHandler: completionHandler)
+            "MusicKit.getInstance().player.skipToPreviousItem();",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: completionHandler)
     }
     
     /// Stops the currently playing media item.

@@ -89,8 +89,6 @@ public enum QueueManager {
         
         MusicKit.shared.player.queue.getPosition { position in
             MusicKit.shared.player.queue.getItems { items in
-                guard let items = items, let position = position else { return }
-                
                 let queueSizeChange = items.count - self.queue.count
                 
                 self.queue = items
@@ -125,10 +123,6 @@ public enum QueueManager {
         
         MusicKit.shared.player.queue.getLength { queueLength in
             MusicKit.shared.player.queue.getPosition { currentPosition in
-                guard let currentPosition = currentPosition,
-                    let queueLength = queueLength,
-                    currentPosition + 1 <= queueLength - 1 else { return }
-                
                 let afterNowPlaying = (currentPosition + 1)..<queueLength
                 let ids = self.queue[afterNowPlaying].map{ $0.id }
                 
@@ -148,8 +142,11 @@ public enum QueueManager {
         // queueItemsDidChange event listener doesn't get called if items are
         // appended to empty queue
         if queue.count == 0 {
-            MusicKit.shared.setQueue(items: ids, completionHandler: {
+            MusicKit.shared.setQueue(items: ids, onSuccess: {
                 self.loadQueue(with: .userModified)
+            }, onError: { error in
+                print(error)
+                fatalError("Could not insert item into queue")
             })
         } else {
             MusicKit.shared.player.queue.append(songs: ids)
@@ -164,8 +161,11 @@ public enum QueueManager {
     
     public static func prepend(ids: [MediaID]) {
         if queue.count == 0 {
-            MusicKit.shared.setQueue(items: ids, completionHandler: {
+            MusicKit.shared.setQueue(items: ids, onSuccess: {
                 self.loadQueue(with: .userModified)
+            }, onError: { error in
+                print(error)
+                fatalError("Could not prepend item to queue")
             })
         } else {
             MusicKit.shared.player.queue.prepend(songs: ids)
@@ -174,8 +174,11 @@ public enum QueueManager {
     
     public static func append(ids: [MediaID]) {
         if queue.count == 0 {
-            MusicKit.shared.setQueue(items: ids, completionHandler: {
+            MusicKit.shared.setQueue(items: ids, onSuccess: {
                 self.loadQueue(with: .userModified)
+            }, onError: { error in
+                print(error)
+                fatalError("Could not append item to queue")
             })
         } else {
             MusicKit.shared.player.queue.append(songs: ids)

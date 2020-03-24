@@ -16,23 +16,33 @@ open class Library {
         mkWebController = webController
     }
     
-    public func getSongs(ids: [MediaID],
-                         completionHandler: @escaping ([Song]?) -> Void) {
+    public func getSongs(
+        ids: [MediaID],
+        onSuccess: @escaping ([Song]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
         let jsString = "MusicKit.getInstance().api.library.songs(\(ids.count > 0 ? ids.description : "null"), null)"
-        mkWebController.evaluateJavaScriptWithPromise(jsString,
-                                                      type: [Song].self,
-                                                      decodingStrategy: .jsonSerialization,
-                                                      completionHandler: completionHandler)
+        mkWebController.evaluateJavaScriptWithPromise(
+            jsString,
+            type: [Song].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
     }
     
     
-    public func getSongs(limit: Int,
-                         offset: Int = 0,
-                         completionHandler: @escaping ([Song]?) -> Void) {
+    public func getSongs(
+        limit: Int,
+        offset: Int = 0,
+        onSuccess: @escaping ([Song]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
         let jsString = "MusicKit.getInstance().api.library.songs(null, { limit: \(limit), offset: \(offset) })"
-        mkWebController.evaluateJavaScriptWithPromise(jsString,
-                                                      type: [Song].self,
-                                                      decodingStrategy: .jsonSerialization,
-                                                      completionHandler: completionHandler)
+        mkWebController.evaluateJavaScriptWithPromise(
+            jsString,
+            type: [Song].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
     }
 }
