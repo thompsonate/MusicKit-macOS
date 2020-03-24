@@ -58,7 +58,7 @@ enum NowPlayingInfoManager {
     
     static func setup() {
         MusicKit.shared.addEventListener(event: .playbackStateDidChange) {
-            MusicKit.shared.player.getPlaybackState(completionHandler: { state in
+            MusicKit.shared.player.getPlaybackState(onSuccess: { state in
                 switch state {
                 case .playing:
                     updateInfo()

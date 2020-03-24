@@ -129,7 +129,7 @@ public enum QueueManager {
                 for i in afterNowPlaying.reversed() {
                     MusicKit.shared.player.queue.remove(index: i)
                 }
-                MusicKit.shared.player.queue.append(songs: ids, completionHandler: {
+                MusicKit.shared.player.queue.append(songs: ids, onSuccess: {
                     self.currentlyUpdatingQueue = false
                     self.didUpdateQueue = true
                 })
@@ -195,11 +195,10 @@ public enum QueueManager {
         MusicKit.shared.player.queue.remove(indexes: queueIndexes)
     }
     
-    public static func changeToMediaItem(at index: Int, completionHandler: (() -> Void)? = nil) {
+    public static func changeToMediaItem(at index: Int, onSuccess: (() -> Void)? = nil) {
         let queueIndex = convertToQueueIndex(upNextIndex: index)
-        MusicKit.shared.player.changeToMediaAtIndex(
-            queueIndex,
-            completionHandler: completionHandler)
+        MusicKit.shared.player.changeToMediaAtIndex(queueIndex,
+                                                    onSuccess: onSuccess)
     }
     
     /// Calculates indexe of queue array from indexe of array slice starting after now playing item

@@ -25,14 +25,14 @@ open class MusicKit {
     public func configure(withDeveloperToken developerToken: String,
                           appName: String,
                           appBuild: String,
-                          completionHandler: @escaping () -> Void)
+                          onSuccess: @escaping () -> Void)
     {
         mkWebController.musicKitDidLoad = {
             RemoteCommandController.setup()
             NowPlayingInfoManager.setup()
             QueueManager.setup()
             
-            completionHandler()
+            onSuccess()
         }
         
         mkWebController.loadWebView(withDeveloperToken: developerToken, appName: appName, appBuild: appBuild)
@@ -49,18 +49,18 @@ open class MusicKit {
     }
     
     /// Unauthorizes the app for the current user.
-    public func unauthorize(completionHandler: (() -> Void)? = nil) {
+    public func unauthorize(onSuccess: (() -> Void)? = nil) {
         mkWebController.evaluateJavaScriptWithPromise(
             "music.unauthorize()",
-            onSuccess: completionHandler)
+            onSuccess: onSuccess)
     }
     
-    public func getIsAuthorized(completionHandler: @escaping (Bool) -> Void) {
+    public func getIsAuthorized(onSuccess: @escaping (Bool) -> Void) {
         mkWebController.evaluateJavaScript(
             "music.isAuthorized",
             type: Bool.self,
             decodingStrategy: .typeCasting,
-            onSuccess: completionHandler)
+            onSuccess: onSuccess)
     }
     
     /// Sets a music player's playback queue using a URL.
