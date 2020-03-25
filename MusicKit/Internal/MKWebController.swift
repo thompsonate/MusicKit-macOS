@@ -18,6 +18,8 @@ class MKWebController: NSWindowController {
     private var promiseDict: [String: (Any) -> Void] = [:]
     private var eventListenerDict: [String: [() -> Void]] = [:]
     
+    private var loadErrorHandler: ((Error) -> Void)? = nil
+    
     private static var defaultErrorHandler: (Error) -> Void {
         return { error in
             #if DEBUG
@@ -53,6 +55,7 @@ class MKWebController: NSWindowController {
         contentController.add(self, name: "musicKitLoaded")
         contentController.add(self, name: "eventListenerCallback")
         contentController.add(self, name: "log")
+        contentController.add(self, name: "throwLoadingError")
         
         webView.uiDelegate = self
         webView.navigationDelegate = self
@@ -63,12 +66,21 @@ class MKWebController: NSWindowController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func showWindow(_ sender: Any?) {
+        fatalError("Don't do this")
+    }
+    
+    
+    // MARK: Loading Webpage
     
     func loadWebView(
         withDeveloperToken developerToken: String,
         appName: String,
-        appBuild: String)
+        appBuild: String,
+        onError: @escaping (Error) -> Void)
     {
+        loadErrorHandler = onError
+        
         let musicKitBundle = Bundle(for: MusicKit.self)
         let htmlPath = musicKitBundle.path(forResource: "MusicKit", ofType: "html")!
         do {
@@ -79,16 +91,54 @@ class MKWebController: NSWindowController {
                 .replacingOccurrences(of: "$APP_BUILD", with: appBuild)
             
             webView.loadHTMLString(htmlString, baseURL: URL(string: "http://music.natethompson.io"))
+            
+            // Ensure that MusicKit has loaded after a few seconds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.evaluateJavaScript("MusicKit.getInstance()", onError: { error in
+                    // only throw error if loadWebView's onError hasn't already been fired
+                    if self.loadErrorHandler != nil {
+                        self.throwWebpageError(.timeoutError(timeout: 5))
+                    }
+                })
+            }
         } catch {
-            NSLog(error.localizedDescription)
+            onError(error)
         }
     }
     
     
-    override func showWindow(_ sender: Any?) {
-        fatalError("Don't do this")
+    enum WebpageError: Error, CustomStringConvertible {
+        case navigationFailed(withError: Error)
+        case loadingFailed(message: String)
+        case timeoutError(timeout: Int)
+        
+        var description: String {
+            switch self {
+            case .navigationFailed(withError: let error):
+                return """
+                MusicKit webpage navigation failed
+                    \(String(describing: error))
+                """
+            case .loadingFailed(message: let message):
+                return message
+            case .timeoutError(timeout: let timeout):
+                return "MusicKit was not loaded after a timeout of \(timeout) seconds"
+            }
+        }
+    }
+
+    private func throwWebpageError(_ error: WebpageError) {
+        if let loadError = loadErrorHandler {
+            loadError(error)
+            loadErrorHandler = nil
+        } else {
+            MKWebController.defaultErrorHandler(error)
+        }
     }
     
+    
+    
+    // MARK: Event Listeners
     
     func addEventListener(named eventName: String, callback: @escaping () -> Void) {
         if eventListenerDict[eventName] != nil {
@@ -312,8 +362,8 @@ class MKWebController: NSWindowController {
 
 
 
-    
-    
+// MARK: Script Message Handler
+
 extension MKWebController: WKScriptMessageHandler {
     func userContentController(
         _ userContentController: WKUserContentController,
@@ -336,6 +386,10 @@ extension MKWebController: WKScriptMessageHandler {
             
         } else if message.name == "log" {
             NSLog(message.body as? String ?? "Error logging from JS")
+            
+        } else if message.name == "throwLoadingError" {
+            let errorMessage = (message.body as? String ?? "Error loading webpage")
+            throwWebpageError(.loadingFailed(message: errorMessage))
             
         } else if let completionHandler = promiseDict[message.name] {
             // is promise callback message
@@ -369,28 +423,10 @@ extension MKWebController: WKUIDelegate {
 // MARK: Navigation Delegate
 extension MKWebController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        NSLog("didFailProvisionalNavigation \(error.localizedDescription)")
+        throwWebpageError(.navigationFailed(withError: error))
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        NSLog("didFailNavigation \(error.localizedDescription)")
-    }
-    
-    func webView(_ webView: WKWebView,
-        decidePolicyFor navigationResponse: WKNavigationResponse,
-        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-
-      guard let statusCode
-          = (navigationResponse.response as? HTTPURLResponse)?.statusCode else {
-        // if there's no http status code to act on, exit and allow navigation
-        decisionHandler(.allow)
-        return
-      }
-
-      if statusCode >= 400 {
-        NSLog("http status error \(statusCode)")
-      }
-
-      decisionHandler(.allow)
+        throwWebpageError(.navigationFailed(withError: error))
     }
 }

@@ -5,7 +5,7 @@
 
   <script>
   var music
-      
+  
   document.addEventListener('musickitloaded', function() {
     // MusicKit global is now defined
     MusicKit.configure({
@@ -15,13 +15,12 @@
         build: '$APP_BUILD'
       }
     });
-    
+  
     music = MusicKit.getInstance();
     musicKitLoaded();
   });
-    
+  
   function musicKitLoaded() {
-    log('MusicKit Loaded');
     try {
       webkit.messageHandlers.musicKitLoaded.postMessage("");
     } catch(err) {
@@ -36,11 +35,19 @@
         console.log(err);
       }
   }
+    
+  function throwLoadingError(message) {
+      try {
+          webkit.messageHandlers.throwLoadingError.postMessage(message);
+      } catch(err) {
+          log(err);
+      }
+  }
   </script>
   
   <script type="text/javascript"
       src="https://js-cdn.music.apple.com/musickit/v1/musickit.js"
-      onerror="log('Error loading MusicKit JS')"></script>
+      onerror="throwLoadingError('Error loading MusicKit JS')"></script>
 
 
 
