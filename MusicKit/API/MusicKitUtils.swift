@@ -182,3 +182,28 @@ public struct Artwork: Codable {
     public let width: Int?
     public let url: String
 }
+
+
+
+public enum MKError: Error, CustomStringConvertible {
+    case javaScriptError(underlyingError: Error)
+    case promiseRejected(context: [String: String])
+    case navigationFailed(withError: Error)
+    case loadingFailed(message: String)
+    case timeoutError(timeout: Int)
+    
+    public var description: String {
+        switch self {
+        case .javaScriptError(let error):
+            return "Error evaluating JavaScript \(String(describing: error))"
+        case .promiseRejected(let context):
+            return "MusicKit rejected promise: \(context)"
+        case .navigationFailed(let error):
+            return "MusicKit webpage navigation failed \(String(describing: error))"
+        case .loadingFailed(let message):
+            return message
+        case .timeoutError(let timeout):
+            return "MusicKit was not loaded after a timeout of \(timeout) seconds"
+        }
+    }
+}
