@@ -94,5 +94,8 @@ open class MusicKit {
     public func addEventListener(event: MusicKitEvent, callback: @escaping () -> Void) {
         mkWebController.addEventListener(named: event.rawValue, callback: callback)
     }
+    
+    /// Set to true to enable logging errors with additional information useful for debugging the API.
+    public var enhancedErrorLogging = false
 }
 

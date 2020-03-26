@@ -26,9 +26,13 @@ class MKDecoder {
     /// - Parameters:
     ///   - response: The result from JavaScript.
     ///   - type: The type to try to decode the response to.
-    ///   - strategy: The strategy used to decode the response. Different types need to be decoded in different ways, and this function attempts to decode
-    ///   the response using the strategy given. For more information, see MKDecoder.Strategy.
-    func decodeJSResponse<T: Decodable>(_ response: Any, to type: T.Type, withStrategy strategy: Strategy) throws -> T {
+    ///   - strategy: The strategy used to decode the response. Different types need to be decoded in different ways,
+    ///   and this function attempts to decode the response using the strategy given. For more information, see MKDecoder.Strategy.
+    func decodeJSResponse<T: Decodable>(
+        _ response: Any,
+        to type: T.Type,
+        withStrategy strategy: Strategy) throws -> T
+    {
         switch strategy {
         case .jsonSerialization:
             if JSONSerialization.isValidJSONObject(response) {
@@ -37,25 +41,25 @@ class MKDecoder {
                     let responseData = try JSONSerialization.data(withJSONObject: response, options: [])
                     return try JSONDecoder().decode(type.self, from: responseData)
                 } catch {
-                    throw DecodingError(underlyingError: error, response: response, decodingStrategy: strategy)
+                    throw MKError.decodingFailed(underlyingError: error)
                 }
             } else {
-                throw DecodingError(underlyingError: .invalidJSONObject, response: response, decodingStrategy: strategy)
+                throw MKError.decodingFailed(underlyingError: DecodingError.invalidJSONObject)
             }
             
         case .jsonString:
             // For use with JSON.stringify() in the JS code
             guard let jsonString = response as? String else {
-                throw DecodingError(underlyingError: .unexpectedType(expected: "String"),
-                                    response: response,
-                                    decodingStrategy: strategy)
+                throw MKError.decodingFailed(underlyingError:
+                    DecodingError.unexpectedType(expected: "String"))
             }
+            
             let responseData = jsonString.data(using: .utf8)!
             
             do {
                 return try JSONDecoder().decode(type.self, from: responseData)
             } catch {
-                throw DecodingError(underlyingError: error, response: response, decodingStrategy: strategy)
+                throw MKError.decodingFailed(underlyingError: error)
             }
             
         case .typeCasting:
@@ -64,9 +68,8 @@ class MKDecoder {
             if let castResponse = response as? T {
                 return castResponse
             } else {
-                throw DecodingError(underlyingError: .typeCastingFailed(type: String(describing: type)),
-                                    response: response,
-                                    decodingStrategy: strategy)
+                throw MKError.decodingFailed(underlyingError:
+                    DecodingError.typeCastingFailed(type: String(describing: type)))
             }
             
         case .enumType:
@@ -78,7 +81,7 @@ class MKDecoder {
                     let decodedFragment = try JSONDecoder().decode([T].self, from: fragmentArray)
                     return decodedFragment[0]
                 } catch {
-                    throw DecodingError(underlyingError: error, response: response, decodingStrategy: strategy)
+                    throw MKError.decodingFailed(underlyingError: error)
                 }
                 
             } else if let _ = response as? String {
@@ -88,61 +91,56 @@ class MKDecoder {
                     let decodedFragment = try JSONDecoder().decode([T].self, from: fragmentArray)
                     return decodedFragment[0]
                 } catch {
-                    throw DecodingError(underlyingError: error, response: response, decodingStrategy: strategy)
+                    throw MKError.decodingFailed(underlyingError: error)
                 }
             } else {
-                throw DecodingError(underlyingError: .unexpectedType(expected: "Int or String"),
-                                    response: response,
-                                    decodingStrategy: strategy)
+                throw MKError.decodingFailed(underlyingError:
+                    DecodingError.unexpectedType(expected: "Int or String"))
+            }
+        }
+    }
+    
+    
+    // MARK: Errors
+    
+    enum DecodingError: Error, CustomStringConvertible {
+        case invalidJSONObject
+        case unexpectedType(expected: String)
+        case typeCastingFailed(type: String)
+        
+        var description: String {
+            switch self {
+            case .invalidJSONObject:
+                return "Failed to decode invalid JSON object"
+            case .unexpectedType(let expected):
+                return "Unexpected Type, was expecting \(expected)"
+            case .typeCastingFailed(let type):
+                return "Failed to decode by type casting to \(type)"
             }
         }
     }
     
     
     /// A wrapper for decoding errors to bundle additional information.
-    struct DecodingError: Error, CustomStringConvertible {
+    struct EnhancedDecodingError: Error, CustomStringConvertible {
         let underlyingError: Error
+        let jsString: String
         let response: Any
         let decodingStrategy: Strategy
-        var jsString: String? = nil
-        
-        init(underlyingError: Error, response: Any, decodingStrategy: Strategy) {
-            self.underlyingError = underlyingError
-            self.response = response
-            self.decodingStrategy = decodingStrategy
-        }
-        
-        init(underlyingError: DecodingError.Internal, response: Any, decodingStrategy: Strategy) {
-            self.underlyingError = underlyingError
-            self.response = response
-            self.decodingStrategy = decodingStrategy
-        }
         
         var description: String {
             return """
             Error decoding JavaScript response:
                 Underlying error: \(String(describing: underlyingError))
-                JavaScript input: \(jsString ?? "not available")
+                JavaScript input: \(jsString)
                 JavaScript response: \(String(describing: response))
                 Decoding strategy: \(String(describing: decodingStrategy))
             """
         }
         
-        /// Errors specific to MKDecoder's implementation
-        enum Internal: Error, CustomStringConvertible {
-            case invalidJSONObject
-            case unexpectedType(expected: String)
-            case typeCastingFailed(type: String)
-            
-            var description: String {
-                switch self {
-                case .invalidJSONObject:
-                    return "Failed to decode invalid JSON object"
-                case .unexpectedType(let expected):
-                    return "Unexpected Type, was expecting \(expected)"
-                case .typeCastingFailed(let type):
-                    return "Failed to decode JSON by type casting to \(type)"
-                }
+        func logIfNeeded() {
+            if MusicKit.shared.enhancedErrorLogging {
+                NSLog(self.description)
             }
         }
     }

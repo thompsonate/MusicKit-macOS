@@ -151,8 +151,11 @@ class MKWebController: NSWindowController {
         webView.evaluateJavaScript(javaScriptString) { (response, error) in
             if let error = error {
                 let onErrorFiltered = self.closureFilteringUnsupportedTypeError(errorClosure: onError)
-                let errorWithDetails = JSError(underlyingError: error, jsString: javaScriptString, result: response)
-                onErrorFiltered(errorWithDetails)
+                onErrorFiltered(MKError.javaScriptError(underlyingError: error))
+                
+                EnhancedJSError(underlyingError: error,
+                                jsString: javaScriptString,
+                                result: response).logIfNeeded()
             } else {
                 onSuccess?()
             }
@@ -283,20 +286,23 @@ class MKWebController: NSWindowController {
         onError: (Error) -> Void)
     {
         if let error = error {
-            onError(JSError(underlyingError: error, jsString: jsString, result: response))
+            onError(MKError.javaScriptError(underlyingError: error))
+            
+            EnhancedJSError(underlyingError: error,
+                            jsString: jsString,
+                            result: response).logIfNeeded()
         } else {
             do {
-                let decodedResponse = try self.decoder.decodeJSResponse(response!, to: type, withStrategy: strategy)
+                let decodedResponse = try self.decoder.decodeJSResponse(
+                    response!, to: type, withStrategy: strategy)
                 onSuccess(decodedResponse)
             } catch {
-                // Add JS input string to the error to aid diagnosis
-                if error is MKDecoder.DecodingError {
-                    var e = error as! MKDecoder.DecodingError
-                    e.jsString = jsString
-                    onError(e)
-                } else {
-                    onError(error)
-                }
+                onError(error)
+                
+                MKDecoder.EnhancedDecodingError(underlyingError: error,
+                                        jsString: jsString,
+                                        response: response!,
+                                        decodingStrategy: strategy).logIfNeeded()
             }
         }
     }
@@ -304,9 +310,11 @@ class MKWebController: NSWindowController {
     
     
     /// Filters out error thrown when evaluating JavaScript returns a promise.
-    private func closureFilteringUnsupportedTypeError(errorClosure: @escaping (Error) -> Void) -> (Error) -> Void {
+    private func closureFilteringUnsupportedTypeError(
+        errorClosure: @escaping (Error) -> Void) -> (Error) -> Void
+    {
         return { error in
-            if let error = error as? JSError,
+            if let error = error as? MKError,
                 let underlyingError = error.underlyingError as? WKError,
                 underlyingError.code == WKError.javaScriptResultTypeIsUnsupported
             {
@@ -314,23 +322,6 @@ class MKWebController: NSWindowController {
             } else {
                 errorClosure(error)
             }
-        }
-    }
-    
-    
-    
-    struct JSError: Error, CustomStringConvertible {
-        let underlyingError: Error
-        let jsString: String
-        let result: Any?
-
-        var description: String {
-            return """
-            Evaluation of JavaScript string produced an error:
-                \(String(describing: underlyingError))
-                JavaScript string: \(jsString)
-                result: \(String(describing: result))
-            """
         }
     }
     
@@ -486,7 +477,7 @@ extension MKWebController: WKNavigationDelegate {
 
 
 
-// MARK: Private Models
+// MARK: Models
 extension MKWebController {
     /// Encapsulates success and error handlers for promise and
     private struct PromiseResponse {
@@ -507,6 +498,35 @@ extension MKWebController {
             self.id = "_\(UUID().uuidString.replacingOccurrences(of: "-", with: ""))"
             self.successID = "success\(id)"
             self.errorID = "error\(id)"
+        }
+    }
+    
+    
+    struct EnhancedJSError: Error, CustomStringConvertible {
+        let underlyingError: Error
+        let jsString: String
+        let result: Any
+
+        var description: String {
+            return """
+            Evaluation of JavaScript string produced an error:
+                \(String(describing: underlyingError))
+                JavaScript string: \(jsString)
+            result: \(String(describing: result))
+            """
+        }
+        
+        func logIfNeeded() {
+            if MusicKit.shared.enhancedErrorLogging {
+                if let underlyingError = underlyingError as? WKError,
+                    underlyingError.code == WKError.javaScriptResultTypeIsUnsupported
+                {
+                    // Filter out unsupported type errors, which are common when
+                    // JavaScript evaluation returns a promise.
+                } else {
+                    NSLog(self.description)
+                }
+            }
         }
     }
 }
