@@ -130,7 +130,7 @@ class MKDecoder {
         
         var description: String {
             return """
-            Error decoding JavaScript response:
+            Error decoding JavaScript result:
                 Underlying error: \(String(describing: underlyingError))
                 JavaScript input: \(jsString)
                 JavaScript response: \(String(describing: response))

@@ -153,9 +153,7 @@ class MKWebController: NSWindowController {
                 let onErrorFiltered = self.closureFilteringUnsupportedTypeError(errorClosure: onError)
                 onErrorFiltered(MKError.javaScriptError(underlyingError: error))
                 
-                EnhancedJSError(underlyingError: error,
-                                jsString: javaScriptString,
-                                result: response).logIfNeeded()
+                EnhancedJSError(underlyingError: error, jsString: javaScriptString).logIfNeeded()
             } else {
                 onSuccess?()
             }
@@ -287,10 +285,7 @@ class MKWebController: NSWindowController {
     {
         if let error = error {
             onError(MKError.javaScriptError(underlyingError: error))
-            
-            EnhancedJSError(underlyingError: error,
-                            jsString: jsString,
-                            result: response).logIfNeeded()
+            EnhancedJSError(underlyingError: error, jsString: jsString).logIfNeeded()
         } else {
             do {
                 let decodedResponse = try self.decoder.decodeJSResponse(
@@ -300,9 +295,9 @@ class MKWebController: NSWindowController {
                 onError(error)
                 
                 MKDecoder.EnhancedDecodingError(underlyingError: error,
-                                        jsString: jsString,
-                                        response: response!,
-                                        decodingStrategy: strategy).logIfNeeded()
+                                                jsString: jsString,
+                                                response: response!,
+                                                decodingStrategy: strategy).logIfNeeded()
             }
         }
     }
@@ -505,14 +500,12 @@ extension MKWebController {
     struct EnhancedJSError: Error, CustomStringConvertible {
         let underlyingError: Error
         let jsString: String
-        let result: Any
 
         var description: String {
             return """
             Evaluation of JavaScript string produced an error:
                 \(String(describing: underlyingError))
                 JavaScript string: \(jsString)
-            result: \(String(describing: result))
             """
         }
         
