@@ -90,6 +90,21 @@ open class MusicKit {
             onError: onError)
     }
     
+    /// Sets a music player's playback queue to a single Playlist.
+    public func setQueue(playlist: Playlist, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "music.setQueue({ playlist: '\(playlist.id)' })",
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    /// Sets a music player's playback queue to a single Album.
+    public func setQueue(album: Album, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "music.setQueue({ album: '\(album.id)' })",
+            onSuccess: onSuccess,
+            onError: onError)
+    }
     
     public func addEventListener(event: MusicKitEvent, callback: @escaping () -> Void) {
         mkWebController.addEventListener(named: event.rawValue, callback: callback)

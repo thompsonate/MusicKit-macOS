@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43CBD2F4242F078B0023F7B7 /* MusicKit.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = 43FF153A242F06DE001667CB /* MusicKit.html */; };
 		OBJ_37 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* API.swift */; };
 		OBJ_38 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* Library.swift */; };
 		OBJ_39 /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* MusicKit.swift */; };
@@ -23,7 +24,21 @@
 		OBJ_56 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_6 /* Package.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		43CBD2F3242F07800023F7B7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				43CBD2F4242F078B0023F7B7 /* MusicKit.html in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		43FF153A242F06DE001667CB /* MusicKit.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = MusicKit.html; sourceTree = "<group>"; };
 		"MusicKit::MusicKit::Product" /* MusicKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MusicKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		OBJ_12 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -58,12 +73,12 @@
 		OBJ_11 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_12 /* API.swift */,
-				OBJ_13 /* Library.swift */,
 				OBJ_14 /* MusicKit.swift */,
-				OBJ_15 /* MusicKitUtils.swift */,
 				OBJ_16 /* Player.swift */,
 				OBJ_17 /* Queue.swift */,
+				OBJ_12 /* API.swift */,
+				OBJ_13 /* Library.swift */,
+				OBJ_15 /* MusicKitUtils.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -71,6 +86,7 @@
 		OBJ_18 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
+				43FF153A242F06DE001667CB /* MusicKit.html */,
 				OBJ_19 /* AuthorizationWindow.swift */,
 				OBJ_20 /* MKDecoder.swift */,
 				OBJ_21 /* MKWebController.swift */,
@@ -104,7 +120,7 @@
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		OBJ_5 /*  */ = {
+		OBJ_5 = {
 			isa = PBXGroup;
 			children = (
 				OBJ_6 /* Package.swift */,
@@ -112,7 +128,6 @@
 				OBJ_29 /* Products */,
 				OBJ_31 /* README.md */,
 			);
-			name = "";
 			sourceTree = "<group>";
 		};
 		OBJ_7 /* Sources */ = {
@@ -145,6 +160,7 @@
 			buildConfigurationList = OBJ_33 /* Build configuration list for PBXNativeTarget "MusicKit" */;
 			buildPhases = (
 				OBJ_36 /* Sources */,
+				43CBD2F3242F07800023F7B7 /* CopyFiles */,
 				OBJ_50 /* Frameworks */,
 			);
 			buildRules = (
@@ -186,7 +202,7 @@
 			knownRegions = (
 				en,
 			);
-			mainGroup = OBJ_5 /*  */;
+			mainGroup = OBJ_5;
 			productRefGroup = OBJ_29 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";

@@ -67,6 +67,25 @@ public enum PlaybackStates: Int, Codable {
     case completed = 10
 }
 
+/// The repeat mode for the music player.
+public enum PlayerRepeatMode: Int, Codable {
+    /// No repeat mode specified.
+    case none = 0
+    /// The current media item will be repeated.
+    case one = 1
+    /// The current queue will be repeated.
+    case all = 2
+
+}
+
+/// The shuffle mode for the music player.
+public enum PlayerShuffleMode: Int, Codable {
+    /// This value indicates that shuffle mode is off.
+    case off = 0
+    /// This value indicates that songs are being shuffled in the current queue.
+    case shuffle = 1 // JS docs call this "songs" for some reason
+}
+
 /// A single audio or video item
 public struct MediaItem: Codable {
     public let assetURL: String?
@@ -153,26 +172,59 @@ public enum ContentRating: String, Codable {
 public typealias MediaID = String
 
 public struct Song: Codable {
-    public let attributes: SongAttributes
+    public let attributes: Attributes
     public let href: String
     public let id: MediaID
     public let type: String
+
+    public struct Attributes: Codable {
+        public let albumName: String
+        public let artistName: String
+        public let artwork: Artwork?
+        public let durationInMillis: Int
+        public let name: String
+        // nil if song is not playable (i.e. removed from Apple Music Catalog)
+        public let playParams: PlayParams?
+        public let trackNumber: Int
+        
+        public var trackTime: String {
+            return String(milliseconds: durationInMillis)
+        }
+    }
+    
 }
 
 
-
-public struct SongAttributes: Codable {
-    public let albumName: String
-    public let artistName: String
-    public let artwork: Artwork?
-    public let durationInMillis: Int
-    public let name: String
-    // nil if song is not playable (i.e. removed from Apple Music Catalog)
-    public let playParams: PlayParams?
-    public let trackNumber: Int
+public struct Album: Codable {
+    public let attributes: Attributes
+    public let href: String
+    public let id: MediaID
+    public let type: String
     
-    public var trackTime: String {
-        return String(milliseconds: durationInMillis)
+    public struct Attributes: Codable {
+        public let artistName: String
+        public let artwork: Artwork
+        public let dateAdded: String
+        public let name: String
+        public let playParams: PlayParams?
+        public let releaseDate: String
+        public let trackCount: Int
+    }
+}
+
+
+public struct Playlist: Codable {
+    public let attributes: Attributes
+    public let href: String
+    public let id: MediaID
+    public let type: String
+    
+    public struct Attributes: Codable {
+        public let canEdit: Bool
+        public let dateAdded: String
+        public let hasCatalog: Bool
+        public let name: String
+        public let playParams: PlayParams
     }
 }
 

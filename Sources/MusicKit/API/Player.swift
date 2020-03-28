@@ -100,20 +100,32 @@ open class Player {
 //
 //    }
 //
-//    /// The current repeat mode of the music player.
-//    public func getRepeatMode(onSuccess: @escaping (PlayerRepeatMode?) -> Void) {
-//
-//    }
-//
-//    /// The current shuffle mode of the music player.
-//    public func getShuffleMode(onSuccess: @escaping (PlayerShuffleMode?) -> Void) {
-//
-//    }
-//
-//    /// A number indicating the current volume of the music player.
-//    public func getVolume(onSuccess: @escaping (Int?) -> Void) {
-//
-//    }
+    /// The current repeat mode of the music player.
+    public func getRepeatMode(onSuccess: @escaping (PlayerRepeatMode) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "music.player.repeatMode",
+            type: PlayerRepeatMode.self,
+            decodingStrategy: .enumType,
+            onSuccess: onSuccess)
+    }
+
+    /// The current shuffle mode of the music player.
+    public func getShuffleMode(onSuccess: @escaping (PlayerShuffleMode) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "music.player.shuffleMode",
+            type: PlayerShuffleMode.self,
+            decodingStrategy: .enumType,
+            onSuccess: onSuccess)
+    }
+
+    /// A number indicating the current volume of the music player.
+    public func getVolume(onSuccess: @escaping (Int) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "music.player.volume",
+            type: Int.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: onSuccess)
+    }
     
     // MARK: Methods
     
@@ -200,5 +212,35 @@ open class Player {
     /// Stops the currently playing media item.
     public func stop() {
         mkWebController.evaluateJavaScript("music.player.stop()")
+    }
+    
+    /// Sets the repeat mode of the player.
+    /// - Parameters:
+    ///   - mode: The repeat mode.
+    ///   - onSuccess: Called when the action is completed successfully.
+    public func setRepeatMode(_ mode: PlayerRepeatMode, onSuccess: (() -> Void)? = nil) {
+        mkWebController.evaluateJavaScript(
+            "music.player.repeatMode = \(mode.rawValue)",
+            onSuccess: onSuccess)
+    }
+    
+    /// Sets the shuffle mode of the player.
+    /// - Parameters:
+    ///   - mode: The shuffle mode: shuffle or off.
+    ///   - onSuccess: Called when the action is completed successfully.
+    public func setShuffleMode(_ mode: PlayerShuffleMode, onSuccess: (() -> Void)? = nil) {
+        mkWebController.evaluateJavaScript(
+            "music.player.shuffleMode = \(mode.rawValue)",
+            onSuccess: onSuccess)
+    }
+    
+    /// Sets the volume of the player
+    /// - Parameters:
+    ///   - volume: The volume level. Must be between 0 and 1.
+    ///   - onSuccess: Called when the action is completed successfully.
+    public func setVolume(_ volume: Double, onSuccess: (() -> Void)? = nil) {
+        mkWebController.evaluateJavaScript(
+            "music.player.volume = \(volume)",
+            onSuccess: onSuccess)
     }
 }

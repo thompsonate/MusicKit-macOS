@@ -45,4 +45,62 @@ open class Library {
             onSuccess: onSuccess,
             onError: onError)
     }
+    
+    public func getAlbums(
+        ids: [MediaID],
+        onSuccess: @escaping ([Album]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        let jsString = "music.api.library.albums(\(ids.count > 0 ? ids.description : "null"), null)"
+        mkWebController.evaluateJavaScriptWithPromise(
+            jsString,
+            type: [Album].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    public func getAlbums(
+        limit: Int,
+        offset: Int = 0,
+        onSuccess: @escaping ([Album]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        let jsString = "music.api.library.albums(null, { limit: \(limit), offset: \(offset) })"
+        mkWebController.evaluateJavaScriptWithPromise(
+            jsString,
+            type: [Album].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    public func getPlaylists(
+        ids: [MediaID],
+        onSuccess: @escaping ([Playlist]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        let jsString = "music.api.library.playlists(\(ids.count > 0 ? ids.description : "null"), null)"
+        mkWebController.evaluateJavaScriptWithPromise(
+            jsString,
+            type: [Playlist].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    public func getPlaylists(
+        limit: Int,
+        offset: Int = 0,
+        onSuccess: @escaping ([Playlist]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        let jsString = "music.api.library.playlists(null, { limit: \(limit), offset: \(offset) })"
+        mkWebController.evaluateJavaScriptWithPromise(
+            jsString,
+            type: [Playlist].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
 }
