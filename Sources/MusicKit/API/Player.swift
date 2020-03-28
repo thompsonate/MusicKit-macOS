@@ -119,10 +119,10 @@ open class Player {
     }
 
     /// A number indicating the current volume of the music player.
-    public func getVolume(onSuccess: @escaping (Int) -> Void) {
+    public func getVolume(onSuccess: @escaping (Double) -> Void) {
         mkWebController.evaluateJavaScript(
             "music.player.volume",
-            type: Int.self,
+            type: Double.self,
             decodingStrategy: .typeCasting,
             onSuccess: onSuccess)
     }
