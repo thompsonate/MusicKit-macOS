@@ -19,6 +19,17 @@ open class API {
         library = Library(webController: webController)
     }
     
+    public func getRecommendations(
+        onSuccess: @escaping ([Recommendation]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "music.api.recommendations()",
+            type: [Recommendation].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
     
     public func addToLibrary(
         songs: [MediaID],

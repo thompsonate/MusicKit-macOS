@@ -220,11 +220,41 @@ public struct Playlist: Codable {
     public let type: String
     
     public struct Attributes: Codable {
-        public let canEdit: Bool
-        public let dateAdded: String
-        public let hasCatalog: Bool
+        public let canEdit: Bool?
+        public let dateAdded: String?
+        public let hasCatalog: Bool?
         public let name: String
         public let playParams: PlayParams
+    }
+}
+
+
+public struct Recommendation: Codable {
+    public let attributes: Attributes
+    public let href: String
+    public let id: String
+    public let relationships: Relationships
+    public let type: String
+    
+    public struct Attributes: Codable {
+        public let isGroupRecommendation: Bool
+        public let kind: String
+        public let nextUpdateDate: String
+        public let resourceTypes: [String]
+        public let title: Title
+        
+        public struct Title: Codable {
+            public let stringForDisplay: String
+        }
+    }
+    
+    public struct Relationships: Codable {
+        public let contents: Contents
+        public let href: String?
+        
+        public struct Contents: Codable {
+            public let data: [Playlist]
+        }
     }
 }
 

@@ -161,7 +161,7 @@ open class Player {
             switch playbackState {
             case .playing:
                 MusicKit.shared.player.pause()
-            case .paused, .stopped, .ended:
+            case .paused, .stopped, .ended, .none:
                 MusicKit.shared.player.play()
             default:
                 break
