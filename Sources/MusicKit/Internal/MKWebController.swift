@@ -82,32 +82,27 @@ class MKWebController: NSWindowController {
         withDeveloperToken developerToken: String,
         appName: String,
         appBuild: String,
+        appIconURL: URL?,
         onError: @escaping (Error) -> Void)
     {
         loadErrorHandler = onError
         
-        let musicKitBundle = Bundle(for: MusicKit.self)
-        let htmlPath = musicKitBundle.path(forResource: "MusicKit", ofType: "html")!
-        do {
-            let url = URL(fileURLWithPath: htmlPath)
-            let htmlString = try String(contentsOf: url)
-                .replacingOccurrences(of: "$DEV_TOKEN", with: developerToken)
-                .replacingOccurrences(of: "$APP_NAME", with: appName)
-                .replacingOccurrences(of: "$APP_BUILD", with: appBuild)
-            
-            webView.loadHTMLString(htmlString, baseURL: URL(string: "http://music.natethompson.io"))
-            
-            // Ensure that MusicKit has loaded after a few seconds
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                self.evaluateJavaScript("MusicKit.getInstance()", onError: { error in
-                    // only throw error if loadWebView's onError hasn't already been fired
-                    if self.loadErrorHandler != nil {
-                        self.throwLoadingError(.timeoutError(timeout: 5))
-                    }
-                })
-            }
-        } catch {
-            onError(error)
+        let htmlString = MKWebpage.html(
+            withDeveloperToken: developerToken,
+            appName: appName,
+            appBuild: appBuild,
+            appIconURL: appIconURL)
+        
+        webView.loadHTMLString(htmlString, baseURL: URL(string: "http://music.natethompson.io"))
+        
+        // Ensure that MusicKit has loaded after a few seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            self.evaluateJavaScript("MusicKit.getInstance()", onError: { error in
+                // only throw error if loadWebView's onError hasn't already been fired
+                if self.loadErrorHandler != nil {
+                    self.throwLoadingError(.timeoutError(timeout: 10))
+                }
+            })
         }
     }
     

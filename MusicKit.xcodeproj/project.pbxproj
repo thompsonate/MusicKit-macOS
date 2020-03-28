@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		43CBD2F4242F078B0023F7B7 /* MusicKit.html in CopyFiles */ = {isa = PBXBuildFile; fileRef = 43FF153A242F06DE001667CB /* MusicKit.html */; };
+		43CBD2F6242F2F550023F7B7 /* MKWebpage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */; };
 		OBJ_37 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* API.swift */; };
 		OBJ_38 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* Library.swift */; };
 		OBJ_39 /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* MusicKit.swift */; };
@@ -31,14 +31,13 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				43CBD2F4242F078B0023F7B7 /* MusicKit.html in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		43FF153A242F06DE001667CB /* MusicKit.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = MusicKit.html; sourceTree = "<group>"; };
+		43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = MKWebpage.swift; sourceTree = "<group>"; tabWidth = 4; };
 		"MusicKit::MusicKit::Product" /* MusicKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MusicKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		OBJ_12 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -86,10 +85,10 @@
 		OBJ_18 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				43FF153A242F06DE001667CB /* MusicKit.html */,
-				OBJ_19 /* AuthorizationWindow.swift */,
-				OBJ_20 /* MKDecoder.swift */,
+				43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */,
 				OBJ_21 /* MKWebController.swift */,
+				OBJ_20 /* MKDecoder.swift */,
+				OBJ_19 /* AuthorizationWindow.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -227,6 +226,7 @@
 				OBJ_43 /* AuthorizationWindow.swift in Sources */,
 				OBJ_44 /* MKDecoder.swift in Sources */,
 				OBJ_45 /* MKWebController.swift in Sources */,
+				43CBD2F6242F2F550023F7B7 /* MKWebpage.swift in Sources */,
 				OBJ_46 /* NowPlayingManager.swift in Sources */,
 				OBJ_47 /* QueueManager.swift in Sources */,
 				OBJ_48 /* ArrayUtil.swift in Sources */,

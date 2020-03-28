@@ -25,6 +25,7 @@ open class MusicKit {
     public func configure(withDeveloperToken developerToken: String,
                           appName: String,
                           appBuild: String,
+                          appIconURL: URL?,
                           onSuccess: @escaping () -> Void,
                           onError: @escaping (Error) -> Void)
     {
@@ -39,6 +40,7 @@ open class MusicKit {
         mkWebController.loadWebView(withDeveloperToken: developerToken,
                                     appName: appName,
                                     appBuild: appBuild,
+                                    appIconURL: appIconURL,
                                     onError: onError)
     }
     
