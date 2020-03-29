@@ -29,11 +29,7 @@ open class MusicKit {
                           onSuccess: @escaping () -> Void,
                           onError: @escaping (Error) -> Void)
     {
-        mkWebController.musicKitDidLoad = {
-            RemoteCommandController.setup()
-            NowPlayingInfoManager.setup()
-            QueueManager.setup()
-            
+        mkWebController.addEventListener(for: .musicKitDidLoad) {
             onSuccess()
         }
         
@@ -108,8 +104,8 @@ open class MusicKit {
             onError: onError)
     }
     
-    public func addEventListener(event: MusicKitEvent, callback: @escaping () -> Void) {
-        mkWebController.addEventListener(named: event.rawValue, callback: callback)
+    public func addEventListener(for event: MKEvent, callback: @escaping () -> Void) {
+        mkWebController.addEventListener(for: event, callback: callback)
     }
     
     /// Set to true to enable logging errors with additional information useful for debugging the API.

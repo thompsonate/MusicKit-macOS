@@ -57,7 +57,7 @@ enum NowPlayingInfoManager {
     private static let infoCenter = MPNowPlayingInfoCenter.default()
     
     static func setup() {
-        MusicKit.shared.addEventListener(event: .playbackStateDidChange) {
+        MusicKit.shared.addEventListener(for: .playbackStateDidChange) {
             MusicKit.shared.player.getPlaybackState(onSuccess: { state in
                 switch state {
                 case .playing:

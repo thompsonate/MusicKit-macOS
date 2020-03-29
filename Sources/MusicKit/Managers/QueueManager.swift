@@ -25,7 +25,7 @@ public enum QueueManager {
     static func setup() {
         loadQueue(with: .setupQueue)
         
-        MusicKit.shared.addEventListener(event: .queueItemsDidChange) {
+        MusicKit.shared.addEventListener(for: .queueItemsDidChange) {
             // Keep table view from reloading all data if queue was just uploaded
             // as the result of a user action
             if didUpdateQueue && !currentlyUpdatingQueue {
@@ -36,7 +36,7 @@ public enum QueueManager {
             }
         }
         
-        MusicKit.shared.addEventListener(event: .queuePositionDidChange) {
+        MusicKit.shared.addEventListener(for: .queuePositionDidChange) {
             self.loadQueue(with: .queuePositionDidChange)
         }
     }

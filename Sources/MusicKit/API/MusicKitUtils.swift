@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public enum MusicKitEvent: String {
+public enum MKEvent: String {
     case authorizationStatusDidChange
     case authorizationStatusWillChange
     case eligibleForSubscribeView
@@ -18,6 +18,7 @@ public enum MusicKitEvent: String {
     case mediaItemWillChange
     case mediaPlaybackError
     case metadataDidChange
+    case musicKitDidLoad
     case playbackBitrateDidChange
     case playbackDurationDidChange
     case playbackProgressDidChange

@@ -19,8 +19,24 @@ class MKWebController: NSWindowController {
     /// promise, beginning with an underscore.
     private var promiseDict = [String: PromiseResponse]()
     
-    /// A dictionary containing listeners to events, keyed by the name of the event.
-    private var eventListenerDict = [String: [() -> Void]]()
+    /// A dictionary containing listeners to events, keyed by the event.
+    private var eventListenerDict = [MKEvent: [() -> Void]]()
+    
+    private var isMusicKitLoaded = false {
+        didSet {
+            if isMusicKitLoaded {
+                musicKitDidLoad()
+            }
+        }
+    }
+
+    /// For setting up the framework. Guaranteed to be the called first before public
+    /// musicKitDidLoad event listeners.
+    private var musicKitDidLoad: () -> Void = {
+        RemoteCommandController.setup()
+        NowPlayingInfoManager.setup()
+        QueueManager.setup()
+    }
     
     /// Holds the error handler of the configure function while loading.
     private var loadErrorHandler: ((Error) -> Void)? = nil
@@ -34,8 +50,6 @@ class MKWebController: NSWindowController {
             #endif
         }
     }
-    
-    var musicKitDidLoad: (() -> Void)?
     
     init() {
         let preferences = WKPreferences()
@@ -120,12 +134,21 @@ class MKWebController: NSWindowController {
     
     // MARK: Event Listeners
     
-    func addEventListener(named eventName: String, callback: @escaping () -> Void) {
-        if eventListenerDict[eventName] != nil {
-            eventListenerDict[eventName]!.append(callback)
+    func addEventListener(for event: MKEvent, callback: @escaping () -> Void) {
+        if eventListenerDict[event] != nil {
+            eventListenerDict[event]!.append(callback)
         } else {
-            eventListenerDict[eventName] = [callback]
+            eventListenerDict[event] = [callback]
         }
+        
+        // If MusicKit isn't loaded, we have to wait to add the event listeners
+        if isMusicKitLoaded {
+            addEventListenerToMKJS(for: event)
+        }
+    }
+    
+    private func addEventListenerToMKJS(for event: MKEvent) {
+        let eventName = event.rawValue
         evaluateJavaScript("""
             music.addEventListener('\(eventName)', function() {
                 \(postCallback(named: eventName))
@@ -336,7 +359,6 @@ class MKWebController: NSWindowController {
     private func promise(successID: String, errorID: String, returnsValue: Bool) -> String {
         let promise = """
         .then(function(response) {
-            console.log(response);
             try {
                 webkit.messageHandlers.\(successID).postMessage(response);
             } catch(err) {
@@ -346,7 +368,6 @@ class MKWebController: NSWindowController {
         """
         let voidPromise = """
         .then(function() {
-            console.log('promise!');
             try {
                 webkit.messageHandlers.\(successID).postMessage('');
             } catch(err) {
@@ -380,13 +401,25 @@ extension MKWebController: WKScriptMessageHandler {
     {
         // Remember to add message handler for each message in init()
         if message.name == "musicKitLoaded" {
-            musicKitDidLoad?()
+            isMusicKitLoaded = true
+
+            // Add registered event listeners to MKJS and call musicKitDidLoad listeners
+            for eventListeners in eventListenerDict {
+                if eventListeners.key == .musicKitDidLoad {
+                    for eventListener in eventListeners.value {
+                        eventListener()
+                    }
+                } else {
+                    addEventListenerToMKJS(for: eventListeners.key)
+                }
+            }
             
         } else if message.name == "eventListenerCallback" {
             guard let eventName = message.body as? String,
-                let callbacks = eventListenerDict[eventName] else
+                let event = MKEvent(rawValue: eventName),
+                let callbacks = eventListenerDict[event] else
             {
-                    NSLog("Error: no callback function for event listener")
+                    NSLog("Error: no callback function for event listener \(String(describing: message.body))")
                     return
             }
             for callback in callbacks {
