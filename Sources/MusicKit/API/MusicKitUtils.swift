@@ -225,7 +225,7 @@ public struct Playlist: Codable {
         public let dateAdded: String?
         public let hasCatalog: Bool?
         public let name: String
-        public let playParams: PlayParams
+        public let playParams: PlayParams?
     }
 }
 
