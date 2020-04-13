@@ -96,6 +96,7 @@ class MKWebController: NSWindowController {
         withDeveloperToken developerToken: String,
         appName: String,
         appBuild: String,
+        baseURL: URL,
         appIconURL: URL?,
         onError: @escaping (Error) -> Void)
     {
@@ -107,7 +108,12 @@ class MKWebController: NSWindowController {
             appBuild: appBuild,
             appIconURL: appIconURL)
         
-        webView.loadHTMLString(htmlString, baseURL: URL(string: "http://music.natethompson.io"))
+        if baseURL.host == nil {
+            onError(MKError.loadingFailed(message: "Invalid appURL"))
+            return
+        }
+        
+        webView.loadHTMLString(htmlString, baseURL: baseURL)
         
         // Ensure that MusicKit has loaded after a few seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {

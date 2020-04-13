@@ -22,9 +22,20 @@ open class MusicKit {
     }
     
     /// Configures MusicKit. This must be called before MusicKit can be used.
+    /// - Parameters:
+    ///   - developerToken: Your MusicKit developer token
+    ///   - appName: The name of your app
+    ///   - appBuild: Your app's build version
+    ///   - appURL: A URL that represents your app. This is surfaced in the Access Request dialog
+    ///   in the sign-in flow and in the name of the web process shown in Activity Monitor.
+    ///   - appIconURL: A URL that points to your app icon, surfaced in the Access Request dialog
+    ///   in the sign-in flow. The preferred size is 120x120.
+    ///   - onSuccess: Called when MusicKit is ready to use.
+    ///   - onError: Called if there is an error loading or configuring MusicKit.
     public func configure(withDeveloperToken developerToken: String,
                           appName: String,
                           appBuild: String,
+                          appURL: URL,
                           appIconURL: URL?,
                           onSuccess: @escaping () -> Void,
                           onError: @escaping (Error) -> Void)
@@ -36,6 +47,7 @@ open class MusicKit {
         mkWebController.loadWebView(withDeveloperToken: developerToken,
                                     appName: appName,
                                     appBuild: appBuild,
+                                    baseURL: appURL,
                                     appIconURL: appIconURL,
                                     onError: onError)
     }
