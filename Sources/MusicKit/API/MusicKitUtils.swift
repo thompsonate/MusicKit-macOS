@@ -208,7 +208,7 @@ public struct Song: Codable {
         /// The duration of the song in milliseconds.
         public let durationInMillis: Int
         /// The release date of the song in `YYYY-MM-DD` format.
-        public let releaseDate: Date?
+        public let releaseDate: String?
         /// The parameters to use to playback the song.
         public let playParams: PlayParams?
         /// The album artwork.
