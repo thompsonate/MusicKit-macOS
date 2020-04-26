@@ -130,10 +130,15 @@ public struct MediaItemArtwork: Codable {
     }
 }
 
+/// An object that represents play parameters for resources.
+///
+/// [https://developer.apple.com/documentation/applemusicapi/playparameters](https://developer.apple.com/documentation/applemusicapi/playparameters)
 public struct PlayParams: Codable {
+    /// The ID of the content to use for playback.
     public let id: String
     public let catalogId: String?
     public let isLibrary: Bool?
+    /// The kind of the content to use for playback.
     public let kind: String
     public let reporting: Bool?
     
@@ -172,27 +177,59 @@ public enum ContentRating: String, Codable {
 /// A Song identifier
 public typealias MediaID = String
 
+/// A Resource object that represents a song.
+///
+/// [https://developer.apple.com/documentation/applemusicapi/song](https://developer.apple.com/documentation/applemusicapi/song)
 public struct Song: Codable {
+    /// The attributes for the song.
     public let attributes: Attributes
+    /// A URL subpath that fetches the resource as the primary object. This member is only present in responses.
     public let href: String
+    /// Persistent identifier of the resource.
     public let id: MediaID
+    /// The type of resource. This value will always be songs. Value: `songs`
     public let type: String
 
+    /// The attributes for a song object.
+    ///
+    /// [https://developer.apple.com/documentation/applemusicapi/song/attributes](https://developer.apple.com/documentation/applemusicapi/song/attributes)
     public struct Attributes: Codable {
-        public let albumName: String
-        public let artistName: String
-        public let artwork: Artwork?
-        public let durationInMillis: Int
+        /// The localized name of the song.
         public let name: String
-        // nil if song is not playable (i.e. removed from Apple Music Catalog)
-        public let playParams: PlayParams?
+        /// The name of the album the song appears on.
+        public let albumName: String
+        /// The artist’s name.
+        public let artistName: String
+        /// The number of the song in the album’s track list.
         public let trackNumber: Int
+        /// The duration of the song in milliseconds.
+        public let durationInMillis: Int
+        /// The release date of the song in `YYYY-MM-DD` format.
+        public let releaseDate: Date?
+        /// The parameters to use to playback the song.
+        public let playParams: PlayParams?
+        /// The album artwork.
+        public let artwork: Artwork?
+        /// The genre names the song is associated with.
+        public let genreNames: [String]
+        
+        /// The song’s composer.
+        // composerName
+        /// The Recording Industry Association of America (RIAA) rating of the content. The possible values for this rating are clean and explicit. No value means no rating.
+        // contentRating
+        /// The disc number the song appears on.
+        // discNumber
+        /// The notes about the song that appear in the iTunes Store.
+        // editorialNotes
+        /// The International Standard Recording Code (ISRC) for the song.
+        // isrc
+        /// The URL for sharing a song in the iTunes Store.
+        // url
         
         public var trackTime: String {
             return String(milliseconds: durationInMillis)
         }
     }
-    
 }
 
 
@@ -259,10 +296,15 @@ public struct Recommendation: Codable {
     }
 }
 
-
+/// An object that represents artwork.
+///
+/// [https://developer.apple.com/documentation/applemusicapi/artwork](https://developer.apple.com/documentation/applemusicapi/artwork)
 public struct Artwork: Codable {
+    /// The maximum height available for the image.
     public let height: Int?
+    /// The maximum width available for the image.
     public let width: Int?
+    /// The URL to request the image asset. The image filename must be preceded by {w}x{h}, as placeholders for the width and height values as described above (for example, {w}x{h}bb.jpeg).
     public let url: String
 }
 
