@@ -137,6 +137,7 @@ public struct PlayParams: Codable {
     /// The ID of the content to use for playback.
     public let id: String
     public let catalogId: String?
+    public let purchasedId: String?
     public let isLibrary: Bool?
     /// The kind of the content to use for playback.
     public let kind: String
@@ -157,6 +158,7 @@ public struct PlayParams: Codable {
         isLibrary = try? container.decode(Bool.self, forKey: .isLibrary)
         kind = try container.decode(String.self, forKey: .kind)
         reporting = try? container.decode(Bool.self, forKey: .reporting)
+        purchasedId = try? container.decode(String.self, forKey: .purchasedId)
     }
     
     public enum PlayParamsKeys: String, CodingKey {
@@ -165,6 +167,7 @@ public struct PlayParams: Codable {
         case isLibrary
         case kind
         case reporting
+        case purchasedId
     }
 }
 
@@ -305,7 +308,7 @@ public struct Artwork: Codable {
     /// The maximum width available for the image.
     public let width: Int?
     /// The URL to request the image asset. The image filename must be preceded by {w}x{h}, as placeholders for the width and height values as described above (for example, {w}x{h}bb.jpeg).
-    public let url: String
+    public let url: String?
 }
 
 
