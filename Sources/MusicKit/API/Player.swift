@@ -52,7 +52,6 @@ open class Player {
             decodingStrategy: .typeCasting,
             onSuccess: onSuccess)
     }
-
     
     /// A Boolean value indicating whether the player is currently playing.
     public func getIsPlaying(onSuccess: @escaping (Bool) -> Void) {
@@ -81,11 +80,6 @@ open class Player {
             onSuccess: onSuccess)
     }
     
-    //    /// The current playback rate for the player.
-    //    public func getPlaybackRate(onSuccess: @escaping (Int?) -> Void) {
-    //
-    //    }
-    
     /// The current playback state of the music player.
     public func getPlaybackState(onSuccess: @escaping (PlaybackStates) -> Void) {
         mkWebController.evaluateJavaScript(
@@ -95,11 +89,15 @@ open class Player {
             onSuccess: onSuccess)
     }
     
-//    /// A Boolean value that indicates whether a playback target is available.
-//    public func getPlaybackTargetAvailable(onSuccess: @escaping (Bool?) -> Void) {
-//
-//    }
-//
+    /// The current playback rate for the player.
+    public func getPlaybackBitrate(onSuccess: @escaping (PlaybackBitrate) -> Void) {
+        mkWebController.evaluateJavaScript(
+            "music.player.bitrate",
+            type: PlaybackBitrate.self,
+            decodingStrategy: .enumType,
+            onSuccess: onSuccess)
+    }
+    
     /// The current repeat mode of the music player.
     public func getRepeatMode(onSuccess: @escaping (PlayerRepeatMode) -> Void) {
         mkWebController.evaluateJavaScript(
@@ -135,11 +133,6 @@ open class Player {
             "music.player.changeToMediaAtIndex(\(index))",
             onSuccess: onSuccess)
     }
-    
-//    /// Begins playing the media item in the queue immediately.
-//    public func changeToMediaItem(id: MediaID, onSuccess: (() -> Void)? = nil) {
-//
-//    }
     
     /// Sets the volume to 0.
     public func mute() {

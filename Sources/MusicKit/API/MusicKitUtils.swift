@@ -37,7 +37,7 @@ public enum MKEvent: String {
 
 
 /// The playback bit rate of the music player
-public enum PlaybackBitrate: Int {
+public enum PlaybackBitrate: Int, Codable {
     /// The bit rate is 256 kbps.
     case high = 256
     /// The bit rate is 64 kbps.
@@ -200,11 +200,11 @@ public struct Song: Codable {
         /// The localized name of the song.
         public let name: String
         /// The name of the album the song appears on.
-        public let albumName: String
+        public let albumName: String?
         /// The artist’s name.
-        public let artistName: String
+        public let artistName: String?
         /// The number of the song in the album’s track list.
-        public let trackNumber: Int
+        public let trackNumber: Int?
         /// The duration of the song in milliseconds.
         public let durationInMillis: Int
         /// The release date of the song in `YYYY-MM-DD` format.
