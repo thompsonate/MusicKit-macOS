@@ -297,7 +297,7 @@ public enum MediaCollection: Decodable {
         
         guard let type = CollectionType(rawValue: typeString) else {
             throw MKError.decodingFailed(
-                underlyingError: MKDecoder.DecodingError.unexpectedType(expected: typeString))
+                underlyingError: DecodingError.unexpectedType(expected: typeString))
         }
         
         switch type {

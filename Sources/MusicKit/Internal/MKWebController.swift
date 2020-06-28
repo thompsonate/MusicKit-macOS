@@ -318,10 +318,10 @@ class MKWebController: NSWindowController {
             } catch {
                 onError(error)
                 
-                MKDecoder.EnhancedDecodingError(underlyingError: error,
-                                                jsString: jsString,
-                                                response: response!,
-                                                decodingStrategy: strategy).logIfNeeded()
+                EnhancedDecodingError(underlyingError: error,
+                                      jsString: jsString,
+                                      response: response!,
+                                      decodingStrategy: strategy).logIfNeeded()
             }
         }
     }

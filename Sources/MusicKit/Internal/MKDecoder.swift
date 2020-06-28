@@ -99,49 +99,49 @@ class MKDecoder {
             }
         }
     }
+}
     
     
-    // MARK: Errors
+// MARK: Errors
+
+enum DecodingError: Error, CustomStringConvertible {
+    case invalidJSONObject
+    case unexpectedType(expected: String)
+    case typeCastingFailed(type: String)
     
-    enum DecodingError: Error, CustomStringConvertible {
-        case invalidJSONObject
-        case unexpectedType(expected: String)
-        case typeCastingFailed(type: String)
-        
-        var description: String {
-            switch self {
-            case .invalidJSONObject:
-                return "Failed to decode invalid JSON object"
-            case .unexpectedType(let expected):
-                return "Unexpected Type, was expecting \(expected)"
-            case .typeCastingFailed(let type):
-                return "Failed to decode by type casting to \(type)"
-            }
+    var description: String {
+        switch self {
+        case .invalidJSONObject:
+            return "Failed to decode invalid JSON object"
+        case .unexpectedType(let expected):
+            return "Unexpected Type, was expecting \(expected)"
+        case .typeCastingFailed(let type):
+            return "Failed to decode by type casting to \(type)"
         }
     }
+}
+
+
+/// A wrapper for decoding errors to bundle additional information.
+struct EnhancedDecodingError: Error, CustomStringConvertible {
+    let underlyingError: Error
+    let jsString: String
+    let response: Any
+    let decodingStrategy: MKDecoder.Strategy
     
+    var description: String {
+        return """
+        Error decoding JavaScript result:
+        Underlying error: \(String(describing: underlyingError))
+        JavaScript input: \(jsString)
+        JavaScript response: \(String(describing: response))
+        Decoding strategy: \(String(describing: decodingStrategy))
+        """
+    }
     
-    /// A wrapper for decoding errors to bundle additional information.
-    struct EnhancedDecodingError: Error, CustomStringConvertible {
-        let underlyingError: Error
-        let jsString: String
-        let response: Any
-        let decodingStrategy: Strategy
-        
-        var description: String {
-            return """
-            Error decoding JavaScript result:
-                Underlying error: \(String(describing: underlyingError))
-                JavaScript input: \(jsString)
-                JavaScript response: \(String(describing: response))
-                Decoding strategy: \(String(describing: decodingStrategy))
-            """
-        }
-        
-        func logIfNeeded() {
-            if MusicKit.shared.enhancedErrorLogging {
-                NSLog(self.description)
-            }
+    func logIfNeeded() {
+        if MusicKit.shared.enhancedErrorLogging {
+            NSLog(self.description)
         }
     }
 }
