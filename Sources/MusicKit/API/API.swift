@@ -31,6 +31,20 @@ open class API {
             onError: onError)
     }
     
+    public func getRecentPlayed(
+        limit: Int = 10,
+        offset: Int = 0,
+        onSuccess: @escaping ([MediaCollection]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "music.api.recentPlayed({ limit: \(limit), offset: \(offset) })",
+            type: [MediaCollection].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
     public func addToLibrary(
         songs: [MediaID],
         onSuccess: (() -> Void)? = nil,

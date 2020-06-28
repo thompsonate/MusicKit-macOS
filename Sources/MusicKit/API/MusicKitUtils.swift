@@ -245,7 +245,7 @@ public struct Album: Codable {
     public struct Attributes: Codable {
         public let artistName: String
         public let artwork: Artwork
-        public let dateAdded: String
+        public let dateAdded: String?
         public let name: String
         public let playParams: PlayParams?
         public let releaseDate: String
@@ -269,6 +269,57 @@ public struct Playlist: Codable {
     }
 }
 
+
+public struct Station: Codable {
+    public let href: String
+    public let id: MediaID
+    public let type: String
+    public let attributes: Attributes
+    
+    public struct Attributes: Codable {
+        public let artwork: Artwork
+        public let isLive: Bool
+        public let name: String
+        public let playParams: PlayParams
+        public let url: String
+    }
+}
+
+
+public enum MediaCollection: Decodable {
+    case album(album: Album)
+    case playlist(playlist: Playlist)
+    case station(station: Station)
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        let typeString = try values.decode(String.self, forKey: .type)
+        
+        guard let type = CollectionType(rawValue: typeString) else {
+            throw MKError.decodingFailed(
+                underlyingError: MKDecoder.DecodingError.unexpectedType(expected: typeString))
+        }
+        
+        switch type {
+        case .albums:
+            self = .album(album: try Album(from: decoder))
+        case .playlists:
+            self = .playlist(playlist: try Playlist(from: decoder))
+        case .stations:
+            self  = .station(station: try Station(from: decoder))
+        }
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case type
+    }
+    
+    public enum CollectionType: String {
+        case albums
+        case playlists
+        case stations
+    }
+}
 
 public struct Recommendation: Codable {
     public let attributes: Attributes
