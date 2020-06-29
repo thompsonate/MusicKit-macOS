@@ -31,6 +31,7 @@ open class API {
             onError: onError)
     }
     
+    /// Fetch the recently played resources for the user.
     public func getRecentPlayed(
         limit: Int = 10,
         offset: Int = 0,
@@ -39,6 +40,21 @@ open class API {
     {
         mkWebController.evaluateJavaScriptWithPromise(
             "music.api.recentPlayed({ limit: \(limit), offset: \(offset) })",
+            type: [MediaCollection].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    /// Fetch the resources in heavy rotation for the user.
+    public func getHeavyRotation(
+        limit: Int = 10,
+        offset: Int = 0,
+        onSuccess: @escaping ([MediaCollection]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        mkWebController.evaluateJavaScriptWithPromise(
+            "music.api.historyHeavyRotation({ limit: \(limit), offset: \(offset) })",
             type: [MediaCollection].self,
             decodingStrategy: .jsonSerialization,
             onSuccess: onSuccess,
