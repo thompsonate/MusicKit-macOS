@@ -138,11 +138,11 @@ public enum QueueManager {
     }
     
     /// Inserts media item into queue at specified index
-    public static func insert(ids: [MediaID], at index: Int) {
+    public static func insert(songs ids: [MediaID], at index: Int) {
         // queueItemsDidChange event listener doesn't get called if items are
         // appended to empty queue
         if queue.count == 0 {
-            MusicKit.shared.setQueue(items: ids, onSuccess: {
+            MusicKit.shared.setQueue(songs: ids, onSuccess: {
                 self.loadQueue(with: .userModified)
             }, onError: { error in
                 print(error)
@@ -159,9 +159,9 @@ public enum QueueManager {
         }
     }
     
-    public static func prepend(ids: [MediaID]) {
+    public static func prepend(songs ids: [MediaID]) {
         if queue.count == 0 {
-            MusicKit.shared.setQueue(items: ids, onSuccess: {
+            MusicKit.shared.setQueue(songs: ids, onSuccess: {
                 self.loadQueue(with: .userModified)
             }, onError: { error in
                 print(error)
@@ -172,9 +172,9 @@ public enum QueueManager {
         }
     }
     
-    public static func append(ids: [MediaID]) {
+    public static func append(songs ids: [MediaID]) {
         if queue.count == 0 {
-            MusicKit.shared.setQueue(items: ids, onSuccess: {
+            MusicKit.shared.setQueue(songs: ids, onSuccess: {
                 self.loadQueue(with: .userModified)
             }, onError: { error in
                 print(error)
