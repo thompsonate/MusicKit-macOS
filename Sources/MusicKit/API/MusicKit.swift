@@ -86,32 +86,32 @@ open class MusicKit {
     }
     
     /// Sets a music player's playback queue to a single Song.
-    public func setQueue(song: Song, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+    public func setQueue(song id: MediaID, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
         mkWebController.evaluateJavaScriptWithPromise(
-            "music.setQueue({ song: '\(song.id)' })",
+            "music.setQueue({ song: '\(id)' })",
             onSuccess: onSuccess,
             onError: onError)
     }
     
-    public func setQueue(items: [MediaID], onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+    public func setQueue(songs ids: [MediaID], onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
         mkWebController.evaluateJavaScriptWithPromise(
-            "music.setQueue({ songs: \(items.description) })",
+            "music.setQueue({ songs: \(ids.description) })",
             onSuccess: onSuccess,
             onError: onError)
     }
     
     /// Sets a music player's playback queue to a single Playlist.
-    public func setQueue(playlist: Playlist, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+    public func setQueue(playlist id: MediaID, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
         mkWebController.evaluateJavaScriptWithPromise(
-            "music.setQueue({ playlist: '\(playlist.id)' })",
+            "music.setQueue({ playlist: '\(id)' })",
             onSuccess: onSuccess,
             onError: onError)
     }
     
     /// Sets a music player's playback queue to a single Album.
-    public func setQueue(album: Album, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
+    public func setQueue(album id: MediaID, onSuccess: (() -> Void)? = nil, onError: @escaping (Error) -> Void) {
         mkWebController.evaluateJavaScriptWithPromise(
-            "music.setQueue({ album: '\(album.id)' })",
+            "music.setQueue({ album: '\(id)' })",
             onSuccess: onSuccess,
             onError: onError)
     }
