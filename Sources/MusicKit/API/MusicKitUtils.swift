@@ -268,18 +268,30 @@ public struct Playlist: Codable {
     }
     
     public struct Attributes: Codable {
+        public let artwork: Artwork
         public let canEdit: Bool?
         public let dateAdded: String?
+        public let description: Description
         public let hasCatalog: Bool?
         public let name: String
         public let playParams: PlayParams?
         
-        public init(canEdit: Bool?, dateAdded: String?, hasCatalog: Bool?, name: String, playParams: PlayParams?) {
+        public init(artwork: Artwork, canEdit: Bool?, dateAdded: String?, description: Description, hasCatalog: Bool?, name: String, playParams: PlayParams?) {
+            self.artwork = artwork
             self.canEdit = canEdit
             self.dateAdded = dateAdded
+            self.description = description
             self.hasCatalog = hasCatalog
             self.name = name
             self.playParams = playParams
+        }
+        
+        public struct Description: Codable {
+            public let standard: String
+            
+            public init(standard: String) {
+                self.standard = standard
+            }
         }
     }
 }
