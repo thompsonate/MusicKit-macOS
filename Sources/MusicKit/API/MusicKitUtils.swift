@@ -254,45 +254,42 @@ public struct Album: Codable {
 }
 
 
+public struct LibraryPlaylist: Codable {
+    public let attributes: Attributes
+    public let href: String
+    public let id: MediaID
+    public let type: String
+    
+    public struct Attributes: Codable {
+        public let artwork: Artwork?
+        public let canEdit: Bool
+        public let dateAdded: String
+        public let description: Description?
+        public let hasCatalog: Bool
+        public let name: String
+        public let playParams: PlayParams?
+    }
+}
+
+
 public struct Playlist: Codable {
     public let attributes: Attributes
     public let href: String
     public let id: MediaID
     public let type: String
     
-    public init(attributes: Playlist.Attributes, href: String, id: MediaID, type: String) {
-        self.attributes = attributes
-        self.href = href
-        self.id = id
-        self.type = type
-    }
-    
     public struct Attributes: Codable {
         public let artwork: Artwork
-        public let canEdit: Bool?
-        public let dateAdded: String?
-        public let description: Description
-        public let hasCatalog: Bool?
+        public let curatorName: String
+        public let curatorSocialHandle: String?
+        public let description: Description?
+        public let isChart: Bool?
+        public let lastModifiedDate: String
         public let name: String
+        public let nextUpdateDate: String?
         public let playParams: PlayParams?
-        
-        public init(artwork: Artwork, canEdit: Bool?, dateAdded: String?, description: Description, hasCatalog: Bool?, name: String, playParams: PlayParams?) {
-            self.artwork = artwork
-            self.canEdit = canEdit
-            self.dateAdded = dateAdded
-            self.description = description
-            self.hasCatalog = hasCatalog
-            self.name = name
-            self.playParams = playParams
-        }
-        
-        public struct Description: Codable {
-            public let standard: String
-            
-            public init(standard: String) {
-                self.standard = standard
-            }
-        }
+        public let playlistType: String
+        public let url: String
     }
 }
 
@@ -348,31 +345,31 @@ public enum MediaCollection: Decodable {
     }
 }
 
-public struct Recommendation: Codable {
+public struct Recommendation: Decodable {
     public let attributes: Attributes
     public let href: String
     public let id: String
     public let relationships: Relationships
     public let type: String
     
-    public struct Attributes: Codable {
+    public struct Attributes: Decodable {
         public let isGroupRecommendation: Bool
         public let kind: String
         public let nextUpdateDate: String
         public let resourceTypes: [String]
         public let title: Title
         
-        public struct Title: Codable {
+        public struct Title: Decodable {
             public let stringForDisplay: String
         }
     }
     
-    public struct Relationships: Codable {
+    public struct Relationships: Decodable {
         public let contents: Contents
         public let href: String?
         
-        public struct Contents: Codable {
-            public let data: [Playlist]
+        public struct Contents: Decodable {
+            public let data: [MediaCollection]
         }
     }
 }
@@ -401,6 +398,12 @@ public struct Artwork: Codable {
         guard let imageURL = URL(string: urlString) else { return nil }
         return NSImage(contentsOf: imageURL)
     }
+}
+
+
+public struct Description: Codable {
+    public let standard: String
+    public let short: String?
 }
 
 

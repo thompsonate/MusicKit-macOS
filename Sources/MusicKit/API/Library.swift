@@ -77,13 +77,13 @@ open class Library {
     
     public func getPlaylists(
         ids: [MediaID],
-        onSuccess: @escaping ([Playlist]) -> Void,
+        onSuccess: @escaping ([LibraryPlaylist]) -> Void,
         onError: @escaping (Error) -> Void)
     {
         let jsString = "music.api.library.playlists(\(ids.count > 0 ? ids.description : "null"), null)"
         mkWebController.evaluateJavaScriptWithPromise(
             jsString,
-            type: [Playlist].self,
+            type: [LibraryPlaylist].self,
             decodingStrategy: .jsonSerialization,
             onSuccess: onSuccess,
             onError: onError)
@@ -92,13 +92,13 @@ open class Library {
     public func getPlaylists(
         limit: Int,
         offset: Int = 0,
-        onSuccess: @escaping ([Playlist]) -> Void,
+        onSuccess: @escaping ([LibraryPlaylist]) -> Void,
         onError: @escaping (Error) -> Void)
     {
         let jsString = "music.api.library.playlists(null, { limit: \(limit), offset: \(offset) })"
         mkWebController.evaluateJavaScriptWithPromise(
             jsString,
-            type: [Playlist].self,
+            type: [LibraryPlaylist].self,
             decodingStrategy: .jsonSerialization,
             onSuccess: onSuccess,
             onError: onError)
