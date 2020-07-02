@@ -260,12 +260,27 @@ public struct Playlist: Codable {
     public let id: MediaID
     public let type: String
     
+    public init(attributes: Playlist.Attributes, href: String, id: MediaID, type: String) {
+        self.attributes = attributes
+        self.href = href
+        self.id = id
+        self.type = type
+    }
+    
     public struct Attributes: Codable {
         public let canEdit: Bool?
         public let dateAdded: String?
         public let hasCatalog: Bool?
         public let name: String
         public let playParams: PlayParams?
+        
+        public init(canEdit: Bool?, dateAdded: String?, hasCatalog: Bool?, name: String, playParams: PlayParams?) {
+            self.canEdit = canEdit
+            self.dateAdded = dateAdded
+            self.hasCatalog = hasCatalog
+            self.name = name
+            self.playParams = playParams
+        }
     }
 }
 
