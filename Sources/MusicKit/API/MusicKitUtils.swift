@@ -388,6 +388,12 @@ public struct Artwork: Codable {
     /// The URL to request the image asset. The image filename must be preceded by {w}x{h}, as placeholders for the width and height values as described above (for example, {w}x{h}bb.jpeg).
     public let url: String?
     
+    public init(height: Int?, width: Int?, url: String?) {
+        self.height = height
+        self.width = width
+        self.url = url
+    }
+    
     public func image(size: Int) -> NSImage? {
         guard var urlString = url else { return nil }
         urlString = urlString.replacingOccurrences(of: "{w}", with: size.description)
