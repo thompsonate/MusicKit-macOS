@@ -236,6 +236,25 @@ public struct Song: Codable {
 }
 
 
+public struct LibraryAlbum: Codable {
+    public let attributes: Attributes
+    public let href: String
+    public let id: MediaID
+    public let type: String
+    
+    public struct Attributes: Codable {
+        public let artistName: String?
+        public let artwork: Artwork?
+        public let dateAdded: String
+        public let genreNames: [String]
+        public let name: String
+        public let playParams: PlayParams?
+        public let releaseDate: String?
+        public let trackCount: Int
+    }
+}
+
+
 public struct Album: Codable {
     public let attributes: Attributes
     public let href: String
@@ -245,11 +264,17 @@ public struct Album: Codable {
     public struct Attributes: Codable {
         public let artistName: String
         public let artwork: Artwork
-        public let dateAdded: String?
+        public let copyright: String
+        public let genreNames: [String]
+        public let isCompilation: Bool
+        public let isComplete: Bool
+        public let isMasteredForItunes: Bool
+        public let isSingle: Bool
         public let name: String
         public let playParams: PlayParams?
         public let releaseDate: String
         public let trackCount: Int
+        public let url: String
     }
 }
 
@@ -312,7 +337,9 @@ public struct Station: Codable {
 
 public enum MediaCollection: Decodable {
     case album(album: Album)
+    case libraryAlbum(album: LibraryAlbum)
     case playlist(playlist: Playlist)
+    case libraryPlaylist(playlist: LibraryPlaylist)
     case station(station: Station)
     
     public init(from decoder: Decoder) throws {
@@ -327,8 +354,12 @@ public enum MediaCollection: Decodable {
         switch type {
         case .albums:
             self = .album(album: try Album(from: decoder))
+        case .libraryAlbums:
+            self = .libraryAlbum(album: try LibraryAlbum(from: decoder))
         case .playlists:
             self = .playlist(playlist: try Playlist(from: decoder))
+        case .libraryPlaylists:
+            self = .libraryPlaylist(playlist: try LibraryPlaylist(from: decoder))
         case .stations:
             self  = .station(station: try Station(from: decoder))
         }
@@ -340,7 +371,9 @@ public enum MediaCollection: Decodable {
     
     public enum CollectionType: String {
         case albums
+        case libraryAlbums = "library-albums"
         case playlists
+        case libraryPlaylists = "library-playlists"
         case stations
     }
 }
