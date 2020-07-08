@@ -103,4 +103,20 @@ open class Library {
             onSuccess: onSuccess,
             onError: onError)
     }
+    
+    public func getSongs(
+        inPlaylist id: MediaID,
+        limit: Int = 10,
+        offset: Int = 0,
+        onSuccess: @escaping ([Song]) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        URLRequestManager.shared.request(
+            "https://api.music.apple.com/v1/me/library/playlists/\(id)/tracks?limit=\(limit)&offset=\(offset)",
+            requiresUserToken: true,
+            type: [Song].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
 }
