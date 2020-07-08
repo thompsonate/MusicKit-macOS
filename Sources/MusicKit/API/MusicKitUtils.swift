@@ -443,7 +443,8 @@ public struct Description: Codable {
 
 public enum MKError: Error, CustomStringConvertible {
     case javaScriptError(underlyingError: Error)
-    case promiseRejected(context: [String: String])
+    case promiseRejected(context: Error)
+    case requestFailed(underlyingError: Error)
     case decodingFailed(underlyingError: Error)
     case navigationFailed(withError: Error)
     case loadingFailed(message: String)
@@ -455,6 +456,8 @@ public enum MKError: Error, CustomStringConvertible {
             return "Error evaluating JavaScript \(String(describing: error))"
         case .promiseRejected(let context):
             return "MusicKit rejected promise: \(context)"
+        case .requestFailed(let error):
+            return "URL Request failed: \(error)"
         case .decodingFailed(let error):
             return "Error decoding JavaScript result: \(String(describing: error))"
         case .navigationFailed(let error):
@@ -470,12 +473,19 @@ public enum MKError: Error, CustomStringConvertible {
         switch self {
         case .javaScriptError(let error):
             return error
+        case .requestFailed(let error):
+            return error
         case .decodingFailed(let error):
             return error
         case .navigationFailed(let error):
             return error
-        case .promiseRejected, .loadingFailed, .timeoutError:
+        case .promiseRejected(let error):
+            return error
+        case .loadingFailed, .timeoutError:
             return nil
         }
     }
 }
+
+extension Dictionary: Error where Key == String, Value == String {}
+extension Array: Error where Element: Error {}

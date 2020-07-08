@@ -41,7 +41,9 @@ open class MusicKit {
                           onError: @escaping (Error) -> Void)
     {
         mkWebController.addEventListener(for: .musicKitDidLoad) {
-            onSuccess()
+            URLRequestManager.shared.configure(
+                onSuccess: onSuccess,
+                onError: onError)
         }
         
         mkWebController.loadWebView(withDeveloperToken: developerToken,
@@ -75,6 +77,33 @@ open class MusicKit {
             type: Bool.self,
             decodingStrategy: .typeCasting,
             onSuccess: onSuccess)
+    }
+    
+    internal func getDeveloperToken(
+        onSuccess: ((String) -> Void)?,
+        onError: @escaping (Error) -> Void)
+    {
+        mkWebController.evaluateJavaScript(
+            "music.developerToken",
+            type: String.self,
+            decodingStrategy: .typeCasting,
+            onSuccess: onSuccess,
+            onError: onError)
+    }
+    
+    
+    internal func getUserToken(
+        onSuccess: ((String?) -> Void)?,
+        onError: @escaping (Error) -> Void)
+    {
+        // Value for musicUserToken is undefined if no user is logged in.
+        // We need JS to return null instead of undefined so we can decode it.
+        mkWebController.evaluateJavaScript(
+            "JSON.stringify(music.musicUserToken !== undefined ? music.musicUserToken : null)",
+            type: String?.self,
+            decodingStrategy: .jsonString,
+            onSuccess: onSuccess,
+            onError: onError)
     }
     
     /// Sets a music player's playback queue using a URL.

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43ABBA8F24B599D30027CA77 /* URLRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43ABBA8E24B599D30027CA77 /* URLRequestManager.swift */; };
 		43CBD2F6242F2F550023F7B7 /* MKWebpage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */; };
 		OBJ_37 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* API.swift */; };
 		OBJ_38 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* Library.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		43ABBA8E24B599D30027CA77 /* URLRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestManager.swift; sourceTree = "<group>"; };
 		43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = MKWebpage.swift; sourceTree = "<group>"; tabWidth = 4; };
 		"MusicKit::MusicKit::Product" /* MusicKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MusicKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */,
 				OBJ_21 /* MKWebController.swift */,
 				OBJ_20 /* MKDecoder.swift */,
+				43ABBA8E24B599D30027CA77 /* URLRequestManager.swift */,
 				OBJ_19 /* AuthorizationWindow.swift */,
 			);
 			path = Internal;
@@ -230,6 +233,7 @@
 				OBJ_46 /* NowPlayingManager.swift in Sources */,
 				OBJ_47 /* QueueManager.swift in Sources */,
 				OBJ_48 /* ArrayUtil.swift in Sources */,
+				43ABBA8F24B599D30027CA77 /* URLRequestManager.swift in Sources */,
 				OBJ_49 /* StringFormatUtil.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
