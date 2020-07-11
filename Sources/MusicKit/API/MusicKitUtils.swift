@@ -69,7 +69,7 @@ public enum PlaybackStates: Int, Codable {
 }
 
 /// The repeat mode for the music player.
-public enum PlayerRepeatMode: Int, Codable {
+public enum PlayerRepeatMode: Int, Codable, CaseIterable {
     /// No repeat mode specified.
     case none = 0
     /// The current media item will be repeated.
@@ -80,7 +80,7 @@ public enum PlayerRepeatMode: Int, Codable {
 }
 
 /// The shuffle mode for the music player.
-public enum PlayerShuffleMode: Int, Codable {
+public enum PlayerShuffleMode: Int, Codable, CaseIterable {
     /// This value indicates that shuffle mode is off.
     case off = 0
     /// This value indicates that songs are being shuffled in the current queue.
