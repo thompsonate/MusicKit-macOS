@@ -37,7 +37,7 @@ open class MusicKit {
                           appBuild: String,
                           appURL: URL,
                           appIconURL: URL?,
-                          onSuccess: @escaping () -> Void,
+                          onSuccess: (() -> Void)? = nil,
                           onError: @escaping (Error) -> Void)
     {
         mkWebController.addEventListener(for: .musicKitDidLoad) {
