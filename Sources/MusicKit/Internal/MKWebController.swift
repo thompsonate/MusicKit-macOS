@@ -437,26 +437,8 @@ extension MKWebController: WKScriptMessageHandler {
                     NSLog("Error: no callback function for event listener \(String(describing: message.body))")
                     return
             }
-            
-            if event == .authorizationStatusDidChange {
-                // URLRequestManager must be configured on authorization before
-                // other listeners may try to use it. API consumers should be able
-                // to expect URLRequestManager to have a valid user token, if
-                // authorized, when listeners for this event are called.
-                URLRequestManager.shared.configure(onSuccess: {
-                    for callback in callbacks {
-                        callback()
-                    }
-                }) { error in
-                    NSLog("Error reconfiguring URLRequestManager after authorization status changed: \(error)")
-                    for callback in callbacks {
-                        callback()
-                    }
-                }
-            } else {
-                for callback in callbacks {
-                    callback()
-                }
+            for callback in callbacks {
+                callback()
             }
             
         } else if message.name == "log" {

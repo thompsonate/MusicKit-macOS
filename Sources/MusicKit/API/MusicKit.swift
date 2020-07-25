@@ -41,9 +41,7 @@ open class MusicKit {
                           onError: @escaping (Error) -> Void)
     {
         mkWebController.addEventListener(for: .musicKitDidLoad) {
-            URLRequestManager.shared.configure(
-                onSuccess: onSuccess,
-                onError: onError)
+            onSuccess?()
         }
         
         mkWebController.loadWebView(withDeveloperToken: developerToken,

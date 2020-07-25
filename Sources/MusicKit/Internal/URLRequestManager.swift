@@ -10,28 +10,40 @@ import Foundation
 class URLRequestManager {
     static var shared = URLRequestManager()
     
-    private var developerToken: String!
-    private var userToken: String?
-    
-    func configure(
-        onSuccess: (() -> Void)?,
+    func request<T: Decodable>(
+        _ endpoint: String,
+        requiresUserToken: Bool,
+        type: T.Type,
+        decodingStrategy: MKDecoder.Strategy,
+        onSuccess: @escaping (T) -> Void,
         onError: @escaping (Error) -> Void)
     {
-        MusicKit.shared.getDeveloperToken(onSuccess: { token in
-            self.developerToken = token
-            
-            MusicKit.shared.getUserToken(onSuccess: { token in
-                self.userToken = token
-                onSuccess?()
+        MusicKit.shared.getDeveloperToken(onSuccess: { developerToken in
+            MusicKit.shared.getUserToken(onSuccess: { userToken in
+                                
+                if requiresUserToken && userToken == nil {
+                    onError(MKError.requestFailed(underlyingError: URLRequestError.requiresUserToken))
+                    return
+                }
+                
+                self.request(
+                    endpoint,
+                    developerToken: developerToken,
+                    userToken: userToken,
+                    type: type,
+                    decodingStrategy: decodingStrategy,
+                    onSuccess: onSuccess,
+                    onError: onError)
                 
             }, onError: onError)
         }, onError: onError)
     }
 
     
-    func request<T: Decodable>(
+    private func request<T: Decodable>(
         _ endpoint: String,
-        requiresUserToken: Bool,
+        developerToken: String,
+        userToken: String?,
         type: T.Type,
         decodingStrategy: MKDecoder.Strategy,
         onSuccess: @escaping (T) -> Void,
@@ -43,15 +55,8 @@ class URLRequestManager {
         }
         
         var request = URLRequest(url: endpointURL)
-        request.setValue("Bearer \(developerToken!)", forHTTPHeaderField: "Authorization")
-        
-        if requiresUserToken {
-            guard let userToken = userToken else {
-                onError(MKError.requestFailed(underlyingError: URLRequestError.requiresUserToken))
-                return
-            }
-            request.setValue(userToken, forHTTPHeaderField: "Music-User-Token")
-        }
+        request.setValue("Bearer \(developerToken)", forHTTPHeaderField: "Authorization")
+        request.setValue(userToken, forHTTPHeaderField: "Music-User-Token")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
