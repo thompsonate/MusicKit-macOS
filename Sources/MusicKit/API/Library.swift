@@ -16,14 +16,40 @@ open class Library {
         mkWebController = webController
     }
     
+    public func getSong(
+        id: MediaID,
+        onSuccess: @escaping (Song) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        URLRequestManager.shared.request(
+            "https://api.music.apple.com/v1/me/library/songs/\(id.description)",
+            requiresUserToken: false,
+            type: [Song].self,
+            decodingStrategy: .jsonSerialization,
+            onSuccess: { songs in
+                if !songs.isEmpty {
+                    onSuccess(songs[0])
+                } else {
+                    onError(MKError.emptyResponse)
+                }
+        },
+            onError: onError)
+    }
+    
+    
     public func getSongs(
         ids: [MediaID],
         onSuccess: @escaping ([Song]) -> Void,
         onError: @escaping (Error) -> Void)
     {
-        let jsString = "music.api.library.songs(\(ids.count > 0 ? ids.description : "null"), null)"
-        mkWebController.evaluateJavaScriptWithPromise(
-            jsString,
+        var idsFormatted = ""
+        for id in ids {
+            idsFormatted.append(id)
+            idsFormatted.append(",")
+        }
+        URLRequestManager.shared.request(
+            "https://api.music.apple.com/v1/me/library/songs?ids=\(idsFormatted)",
+            requiresUserToken: true,
             type: [Song].self,
             decodingStrategy: .jsonSerialization,
             onSuccess: onSuccess,
@@ -32,19 +58,20 @@ open class Library {
     
     
     public func getSongs(
-        limit: Int,
+        limit: Int = 25,
         offset: Int = 0,
-        onSuccess: @escaping ([Song]) -> Void,
+        onSuccess: @escaping ([Song], Metadata?) -> Void,
         onError: @escaping (Error) -> Void)
     {
-        let jsString = "music.api.library.songs(null, { limit: \(limit), offset: \(offset) })"
-        mkWebController.evaluateJavaScriptWithPromise(
-            jsString,
+        URLRequestManager.shared.request(
+            "https://api.music.apple.com/v1/me/library/songs?limit=\(limit.description)&offset=\(offset.description)",
+            requiresUserToken: true,
             type: [Song].self,
             decodingStrategy: .jsonSerialization,
             onSuccess: onSuccess,
             onError: onError)
     }
+    
     
     public func getAlbums(
         ids: [MediaID],
@@ -108,7 +135,7 @@ open class Library {
         inPlaylist id: MediaID,
         limit: Int = 10,
         offset: Int = 0,
-        onSuccess: @escaping ([Song]) -> Void,
+        onSuccess: @escaping ([Song], Metadata?) -> Void,
         onError: @escaping (Error) -> Void)
     {
         URLRequestManager.shared.request(

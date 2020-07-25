@@ -15,7 +15,7 @@ class URLRequestManager {
         requiresUserToken: Bool,
         type: T.Type,
         decodingStrategy: MKDecoder.Strategy,
-        onSuccess: @escaping (T) -> Void,
+        onSuccess: @escaping (T, Metadata?) -> Void,
         onError: @escaping (Error) -> Void)
     {
         MusicKit.shared.getDeveloperToken(onSuccess: { developerToken in
@@ -38,7 +38,26 @@ class URLRequestManager {
             }, onError: onError)
         }, onError: onError)
     }
-
+    
+    
+    func request<T: Decodable>(
+        _ endpoint: String,
+        requiresUserToken: Bool,
+        type: T.Type,
+        decodingStrategy: MKDecoder.Strategy,
+        onSuccess: @escaping (T) -> Void,
+        onError: @escaping (Error) -> Void)
+    {
+        self.request(
+            endpoint,
+            requiresUserToken: requiresUserToken,
+            type: type,
+            decodingStrategy: decodingStrategy,
+            onSuccess: { (data, _) in
+                onSuccess(data)
+        }, onError: onError)
+    }
+    
     
     private func request<T: Decodable>(
         _ endpoint: String,
@@ -46,7 +65,7 @@ class URLRequestManager {
         userToken: String?,
         type: T.Type,
         decodingStrategy: MKDecoder.Strategy,
-        onSuccess: @escaping (T) -> Void,
+        onSuccess: @escaping (T, Metadata?) -> Void,
         onError: @escaping (Error) -> Void)
     {
         guard let endpointURL = URL(string: endpoint) else {
@@ -67,7 +86,7 @@ class URLRequestManager {
             do {
                 let decodedResponse = try JSONDecoder().decode(Response<T>.self, from: data!)
                 if let decodedData = decodedResponse.data {
-                    onSuccess(decodedData)
+                    onSuccess(decodedData, decodedResponse.meta)
                 } else if let errors = decodedResponse.errors {
                     onError(MKError.requestFailed(underlyingError: errors))
                 } else {
@@ -88,12 +107,8 @@ class URLRequestManager {
     
     struct Response<T: Decodable>: Decodable {
         let data: T?
-        let meta: Meta?
+        let meta: Metadata?
         let errors: [[String: String]]?
-        
-        struct Meta: Decodable {
-            let total: Int
-        }
     }
     
     
@@ -113,4 +128,10 @@ class URLRequestManager {
             }
         }
     }
+}
+
+
+/// Metadata returned from the MusicKit API
+public struct Metadata: Decodable {
+    public let total: Int
 }

@@ -208,15 +208,17 @@ class MKWebController: NSWindowController {
             return
         }
         
-        webView.evaluateJavaScript(javaScriptString) { (response, error) in
-            self.handleResponse(
-                response,
-                to: javaScriptString,
-                withError: error,
-                decodeTo: type,
-                withStrategy: strategy,
-                onSuccess: onSuccess,
-                onError: onError)
+        DispatchQueue.main.async {
+            self.webView.evaluateJavaScript(javaScriptString) { (response, error) in
+                self.handleResponse(
+                    response,
+                    to: javaScriptString,
+                    withError: error,
+                    decodeTo: type,
+                    withStrategy: strategy,
+                    onSuccess: onSuccess,
+                    onError: onError)
+            }
         }
     }
     

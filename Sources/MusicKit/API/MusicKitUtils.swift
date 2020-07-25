@@ -449,6 +449,7 @@ public enum MKError: Error, CustomStringConvertible {
     case navigationFailed(withError: Error)
     case loadingFailed(message: String)
     case timeoutError(timeout: Int)
+    case emptyResponse
     
     public var description: String {
         switch self {
@@ -466,6 +467,8 @@ public enum MKError: Error, CustomStringConvertible {
             return message
         case .timeoutError(let timeout):
             return "MusicKit was not loaded after a timeout of \(timeout) seconds"
+        case .emptyResponse:
+            return "Response is empty"
         }
     }
     
@@ -481,7 +484,7 @@ public enum MKError: Error, CustomStringConvertible {
             return error
         case .promiseRejected(let error):
             return error
-        case .loadingFailed, .timeoutError:
+        case .loadingFailed, .timeoutError, .emptyResponse:
             return nil
         }
     }
