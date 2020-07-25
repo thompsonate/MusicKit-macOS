@@ -153,13 +153,22 @@ class MKWebController: NSWindowController {
         }
     }
     
+    /// MKEvents that currently have added event listeners
+    private var currentListeningEvents = Set<MKEvent>()
+    
     private func addEventListenerToMKJS(for event: MKEvent) {
-        let eventName = event.rawValue
-        evaluateJavaScript("""
-            music.addEventListener('\(eventName)', function() {
-                \(postCallback(named: eventName))
-            })
-            """)
+        // We only need to add one JS listener for each event. When the
+        // JS event listener is called, all of the matching event listeners
+        // in eventListenerDict will be called.
+        if !currentListeningEvents.contains(event) {
+            let eventName = event.rawValue
+            evaluateJavaScript("""
+                music.addEventListener('\(eventName)', function() {
+                    \(postCallback(named: eventName))
+                })
+                """)
+        }
+        currentListeningEvents.insert(event)
     }
     
     
@@ -428,8 +437,26 @@ extension MKWebController: WKScriptMessageHandler {
                     NSLog("Error: no callback function for event listener \(String(describing: message.body))")
                     return
             }
-            for callback in callbacks {
-                callback()
+            
+            if event == .authorizationStatusDidChange {
+                // URLRequestManager must be configured on authorization before
+                // other listeners may try to use it. API consumers should be able
+                // to expect URLRequestManager to have a valid user token, if
+                // authorized, when listeners for this event are called.
+                URLRequestManager.shared.configure(onSuccess: {
+                    for callback in callbacks {
+                        callback()
+                    }
+                }) { error in
+                    NSLog("Error reconfiguring URLRequestManager after authorization status changed: \(error)")
+                    for callback in callbacks {
+                        callback()
+                    }
+                }
+            } else {
+                for callback in callbacks {
+                    callback()
+                }
             }
             
         } else if message.name == "log" {
