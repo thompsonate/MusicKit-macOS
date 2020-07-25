@@ -293,16 +293,19 @@ class MKWebController: NSWindowController {
                 onError(MKError.promiseRejected(context: ["unknown": String(describing: error)]))
             }
         })
-
+        
         // Add PromiseResponse to dictionary to run after the message handler is called
         promiseDict[promiseResponse.id] = promiseResponse
-        contentController.add(self, name: promiseResponse.successID)
-        contentController.add(self, name: promiseResponse.errorID)
-
-        let promiseString = promise(successID: promiseResponse.successID,
-                                    errorID: promiseResponse.errorID,
-                                    returnsValue: returnsValue)
-        evaluateJavaScript(javaScriptString + promiseString, onError: onError)
+        
+        DispatchQueue.main.async {
+            self.contentController.add(self, name: promiseResponse.successID)
+            self.contentController.add(self, name: promiseResponse.errorID)
+            
+            let promiseString = self.promise(successID: promiseResponse.successID,
+                                        errorID: promiseResponse.errorID,
+                                        returnsValue: returnsValue)
+            self.evaluateJavaScript(javaScriptString + promiseString, onError: onError)
+        }
     }
     
     
