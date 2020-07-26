@@ -236,6 +236,12 @@ public struct Song: Codable {
 }
 
 
+public enum SongType {
+    case song
+    case librarySong
+}
+
+
 public struct LibraryAlbum: Codable {
     public let attributes: Attributes
     public let href: String
