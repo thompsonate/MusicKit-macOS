@@ -181,14 +181,16 @@ class MKWebController: NSWindowController {
         onSuccess: (() -> Void)? = nil,
         onError: @escaping (Error) -> Void = defaultErrorHandler)
     {
-        webView.evaluateJavaScript(javaScriptString) { (response, error) in
-            if let error = error {
-                let onErrorFiltered = self.closureFilteringUnsupportedTypeError(errorClosure: onError)
-                onErrorFiltered(MKError.javaScriptError(underlyingError: error))
-                
-                EnhancedJSError(underlyingError: error, jsString: javaScriptString).logIfNeeded()
-            } else {
-                onSuccess?()
+        DispatchQueue.main.async {
+            self.webView.evaluateJavaScript(javaScriptString) { (response, error) in
+                if let error = error {
+                    let onErrorFiltered = self.closureFilteringUnsupportedTypeError(errorClosure: onError)
+                    onErrorFiltered(MKError.javaScriptError(underlyingError: error))
+                    
+                    EnhancedJSError(underlyingError: error, jsString: javaScriptString).logIfNeeded()
+                } else {
+                    onSuccess?()
+                }
             }
         }
     }
