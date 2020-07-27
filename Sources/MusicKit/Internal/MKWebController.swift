@@ -183,10 +183,14 @@ class MKWebController: NSWindowController {
     {
         DispatchQueue.main.async {
             self.webView.evaluateJavaScript(javaScriptString) { (response, error) in
-                if let error = error {
-                    let onErrorFiltered = self.closureFilteringUnsupportedTypeError(errorClosure: onError)
-                    onErrorFiltered(MKError.javaScriptError(underlyingError: error))
-                    
+                if let underlyingError = error as? WKError,
+                    underlyingError.code == WKError.javaScriptResultTypeIsUnsupported
+                {
+                    // This error occurs when JavaScript returns a promise,
+                    // which should mean the JS evaluation was successful.
+                    onSuccess?()
+                } else if let error = error {
+                    onError(error)
                     EnhancedJSError(underlyingError: error, jsString: javaScriptString).logIfNeeded()
                 } else {
                     onSuccess?()
@@ -338,24 +342,6 @@ class MKWebController: NSWindowController {
                                       jsString: jsString,
                                       response: response!,
                                       decodingStrategy: strategy).logIfNeeded()
-            }
-        }
-    }
-
-    
-    
-    /// Filters out error thrown when evaluating JavaScript returns a promise.
-    private func closureFilteringUnsupportedTypeError(
-        errorClosure: @escaping (Error) -> Void) -> (Error) -> Void
-    {
-        return { error in
-            if let error = error as? MKError,
-                let underlyingError = error.underlyingError as? WKError,
-                underlyingError.code == WKError.javaScriptResultTypeIsUnsupported
-            {
-                // do nothing
-            } else {
-                errorClosure(error)
             }
         }
     }
