@@ -35,7 +35,13 @@ enum RemoteCommandController {
         }
         
         remoteCommandCenter.previousTrackCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-            MusicKit.shared.player.skipToPreviousItem()
+            MusicKit.shared.player.getCurrentPlaybackTime { playbackTime in
+                if playbackTime < 2 {
+                    MusicKit.shared.player.skipToPreviousItem()
+                } else {
+                    MusicKit.shared.player.seek(to: 0)
+                }
+            }
             return .success
         }
         
