@@ -94,26 +94,38 @@ enum NowPlayingInfoManager {
         var nowPlayingInfo = [String: Any]()
         
         MusicKit.shared.player.getNowPlayingItem { nowPlayingItem in
-            MusicKit.shared.player.getCurrentPlaybackTime { playbackTime in
-                
-                nowPlayingInfo[MPMediaItemPropertyMediaType] = MPNowPlayingInfoMediaType.audio.rawValue
-                
-                nowPlayingInfo[MPMediaItemPropertyTitle] = nowPlayingItem?.attributes.name
-                nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = nowPlayingItem?.attributes.albumName
-                nowPlayingInfo[MPMediaItemPropertyArtist] = nowPlayingItem?.attributes.artistName
-                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = nowPlayingItem?.attributes.durationInSecs
-                nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = NSNumber(value: playbackTime)
-                
-                let artwork = MPMediaItemArtwork(boundsSize: CGSize(width: 80, height: 80), requestHandler: { size -> NSImage in
-                    if let artwork = nowPlayingItem?.attributes.artwork?.imageSmall {
-                        return artwork
-                    } else {
-                        return NSImage(named: NSImage.applicationIconName)!
+            MusicKit.shared.player.getCurrentPlaybackDuration { duration in
+                MusicKit.shared.player.getCurrentPlaybackTime { playbackTime in
+                    
+                    nowPlayingInfo[MPMediaItemPropertyMediaType] = MPNowPlayingInfoMediaType.audio.rawValue
+                    
+                    nowPlayingInfo[MPMediaItemPropertyTitle] = nowPlayingItem?.attributes.name ?? "Unknown"
+                    nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = nowPlayingItem?.attributes.albumName
+                    nowPlayingInfo[MPMediaItemPropertyArtist] = nowPlayingItem?.attributes.artistName
+                    nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
+                    nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = NSNumber(value: playbackTime)
+                    
+                    nowPlayingInfo[MPMediaItemPropertyComposer] = nowPlayingItem?.attributes.composerName
+                    nowPlayingInfo[MPMediaItemPropertyGenre] = nowPlayingItem?.attributes.genreNames.first
+                    nowPlayingInfo[MPMediaItemPropertyReleaseDate] = nowPlayingItem?.attributes.releaseDate
+                    nowPlayingInfo[MPMediaItemPropertyAlbumTrackNumber] = nowPlayingItem?.attributes.trackNumber
+                    nowPlayingInfo[MPMediaItemPropertyDiscNumber] = nowPlayingItem?.attributes.discNumber
+                                        
+                    if let contentRating = nowPlayingItem?.attributes.contentRating {
+                        nowPlayingInfo[MPMediaItemPropertyIsExplicit] = contentRating == .explicit
                     }
-                })
-                nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
-                
-                infoCenter.nowPlayingInfo = nowPlayingInfo
+                                                            
+                    if let image = nowPlayingItem?.attributes.artwork?.image {
+                        let artwork = MPMediaItemArtwork(
+                            boundsSize: image.size,
+                            requestHandler: { size -> NSImage in
+                                return image
+                        })
+                        nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                    }
+                    
+                    infoCenter.nowPlayingInfo = nowPlayingInfo
+                }
             }
         }
     }

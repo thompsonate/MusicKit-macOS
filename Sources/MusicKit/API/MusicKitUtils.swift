@@ -104,7 +104,7 @@ public struct MediaItemAttributes: Codable {
     public let contentRating: ContentRating?
     public let discNumber: Int?
     public let durationInMillis: Int?
-    public let genreNames: [String]
+    public let genreNames: [String] = []
     public let isrc: String?
     public let name: String?
     public let playParams: PlayParams
@@ -121,12 +121,8 @@ public struct MediaItemAttributes: Codable {
 public struct MediaItemArtwork: Codable {
     public let url: String
     
-    // An 80x80 image
-    public var imageSmall: NSImage? {
-        var urlString = url
-        urlString = urlString.replacingOccurrences(of: "{w}", with: "80")
-            .replacingOccurrences(of: "{h}", with: "80")
-        guard let imageURL = URL(string: urlString) else { return nil }
+    public var image: NSImage? {
+        guard let imageURL = URL(string: url) else { return nil }
         return NSImage(contentsOf: imageURL)
     }
 }
