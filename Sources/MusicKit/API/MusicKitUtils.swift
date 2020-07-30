@@ -97,23 +97,24 @@ public struct MediaItem: Codable {
 }
 
 public struct MediaItemAttributes: Codable {
-    public let albumName: String
-    public let artistName: String
+    public let albumName: String?
+    public let artistName: String?
     public let artwork: MediaItemArtwork?
     public let composerName: String?
     public let contentRating: ContentRating?
     public let discNumber: Int?
-    public let durationInMillis: Int
-    public let genreNames: [String]?
+    public let durationInMillis: Int?
+    public let genreNames: [String]
     public let isrc: String?
-    public let name: String
+    public let name: String?
     public let playParams: PlayParams
     public let releaseDate: String?
-    public let trackNumber: Int
+    public let trackNumber: Int?
     public let url: String?
     
-    public var durationInSecs: Int {
-        return durationInMillis / 1000
+    public var durationInSecs: Int? {
+        guard let millis = durationInMillis else { return nil }
+        return millis / 1000
     }
 }
 
