@@ -129,8 +129,8 @@ class MKWebController: NSWindowController {
     
     private func throwLoadingError(_ error: MKError) {
         if let loadError = loadErrorHandler {
-            loadError(error)
             loadErrorHandler = nil
+            loadError(error)
         } else {
             MKWebController.defaultErrorHandler(error)
         }
