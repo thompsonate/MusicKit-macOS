@@ -467,7 +467,7 @@ public enum MKError: Error, CustomStringConvertible {
         case .navigationFailed(let error):
             return "MusicKit webpage navigation failed \(String(describing: error))"
         case .loadingFailed(let message):
-            return message
+            return "MusicKit failed to load. \n\(message)"
         case .timeoutError(let timeout):
             return "MusicKit was not loaded after a timeout of \(timeout) seconds"
         case .emptyResponse:

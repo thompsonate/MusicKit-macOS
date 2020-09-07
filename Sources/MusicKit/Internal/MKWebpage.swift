@@ -31,16 +31,19 @@ enum MKWebpage {
           
           document.addEventListener('musickitloaded', function() {
             // MusicKit global is now defined
-            MusicKit.configure({
-              developerToken: '\(developerToken)',
-              app: {
-                name: '\(appName)',
-                build: '\(appBuild)'
-              }
-            });
-          
-            music = MusicKit.getInstance();
-            musicKitLoaded();
+            try {
+                music = MusicKit.configure({
+                developerToken: '\(developerToken)',
+                app: {
+                    name: '\(appName)',
+                    build: '\(appBuild)'
+                    }
+                });
+                
+                musicKitLoaded();
+            } catch(err) {
+                throwLoadingError(err);
+            }
           });
           
           function musicKitLoaded() {
@@ -59,9 +62,9 @@ enum MKWebpage {
               }
           }
             
-          function throwLoadingError(message) {
+          function throwLoadingError(err) {
               try {
-                  webkit.messageHandlers.throwLoadingError.postMessage(message);
+                  webkit.messageHandlers.throwLoadingError.postMessage(err.toString());
               } catch(err) {
                   log(err);
               }
