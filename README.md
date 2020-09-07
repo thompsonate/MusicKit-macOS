@@ -6,7 +6,7 @@ This framework is essentially a Swift wrapper around Apple's [MusicKit JS](https
 Internally, the JS framework runs in a web view and is interfaced with by sending it JavaScript strings and interpreting the response. Because of this, MusicKit for Mac is highly asynchronous, though a lot of care has been put into making the API as easy to use as possible.
 
 ## Configuration
-MusicKit needs to be authenticated with a developer token. You can follow [Apple's documentation](https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens) on creating and signing a token. Keep in mind that these tokens expire after a maximum of 6 months.
+MusicKit needs to be authenticated with a developer token. You can follow [Apple's documentation](https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens) on creating and signing a token. [This JavaScript file](/jwt.js) may help with generating tokens. Keep in mind that these tokens expire after a maximum of 6 months.
 
 After your app launches, configure MusicKit with your developer token. When `onSuccess` is called, MusicKit is set up and the rest of the API can be used.
 ```swift
