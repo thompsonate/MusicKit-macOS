@@ -444,7 +444,7 @@ public struct Description: Codable {
 
 
 
-public enum MKError: Error, CustomStringConvertible {
+public enum MKError: Error, LocalizedError {
     case javaScriptError(underlyingError: Error)
     case promiseRejected(context: Error)
     case requestFailed(underlyingError: Error)
@@ -454,7 +454,7 @@ public enum MKError: Error, CustomStringConvertible {
     case timeoutError(timeout: Int)
     case emptyResponse
     
-    public var description: String {
+    public var errorDescription: String? {
         switch self {
         case .javaScriptError(let error):
             return "Error evaluating JavaScript \(String(describing: error))"
@@ -472,6 +472,27 @@ public enum MKError: Error, CustomStringConvertible {
             return "MusicKit was not loaded after a timeout of \(timeout) seconds"
         case .emptyResponse:
             return "Response is empty"
+        }
+    }
+    
+    public var failureReason: String? {
+        switch self {
+            case .javaScriptError(let error):
+                return "JavaScript evaluation returned an error: \(error)"
+            case .promiseRejected(let context):
+                return "MusicKit rejected promise: \(context)"
+            case .requestFailed(let error):
+                return "URL Request failed: \(error)"
+            case .decodingFailed(let error):
+                return "Error decoding JavaScript result: \(String(describing: error))"
+            case .navigationFailed(let error):
+                return "MusicKit webpage navigation failed \(String(describing: error))"
+            case .loadingFailed(let message):
+                return message
+            case .timeoutError(let timeout):
+                return "MusicKit was not loaded after a timeout of \(timeout) seconds"
+            case .emptyResponse:
+                return "Response is empty"
         }
     }
     
