@@ -308,7 +308,7 @@ public struct Playlist: Codable {
     
     public struct Attributes: Codable {
         public let artwork: Artwork
-        public let curatorName: String
+        public let curatorName: String?
         public let curatorSocialHandle: String?
         public let description: Description?
         public let isChart: Bool?
