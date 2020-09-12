@@ -116,6 +116,16 @@ public struct MediaItemAttributes: Codable {
         guard let millis = durationInMillis else { return nil }
         return millis / 1000
     }
+    
+    public var isExplicit: Bool {
+        guard let rating = contentRating else { return false }
+        switch contentRating {
+        case .explicit:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 public struct MediaItemArtwork: Codable {
