@@ -115,13 +115,13 @@ enum NowPlayingInfoManager {
                         nowPlayingInfo[MPMediaItemPropertyIsExplicit] = contentRating == .explicit
                     }
                                                             
-                    if let image = nowPlayingItem?.attributes.artwork?.image {
-                        let artwork = MPMediaItemArtwork(
-                            boundsSize: image.size,
+                    if let artwork = nowPlayingItem?.attributes.artwork {
+                        let mediaItemArtwork = MPMediaItemArtwork(
+                            boundsSize: CGSize(width: 2000, height: 2000),
                             requestHandler: { size -> NSImage in
-                                return image
+                                return artwork.nsImage(ofSize: size) ?? NSImage()
                         })
-                        nowPlayingInfo[MPMediaItemPropertyArtwork] = artwork
+                        nowPlayingInfo[MPMediaItemPropertyArtwork] = mediaItemArtwork
                     }
                     
                     infoCenter.nowPlayingInfo = nowPlayingInfo

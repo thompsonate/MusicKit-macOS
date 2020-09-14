@@ -118,7 +118,6 @@ public struct MediaItemAttributes: Codable {
     }
     
     public var isExplicit: Bool {
-        guard let rating = contentRating else { return false }
         switch contentRating {
         case .explicit:
             return true
@@ -129,11 +128,18 @@ public struct MediaItemAttributes: Codable {
 }
 
 public struct MediaItemArtwork: Codable {
-    public let url: String
+    let url: String
     
-    public var image: NSImage? {
-        guard let imageURL = URL(string: url) else { return nil }
-        return NSImage(contentsOf: imageURL)
+    public func url(forImageOfSize size: NSSize) -> URL? {
+        // For some reason the url seems to sometimes contain 2000x2000 instead of {w}x{h}.
+        return URL(string: url
+            .replacingOccurrences(of: "2000x2000", with: "\(Int(size.width))x\(Int(size.height))")
+            .replacingOccurrences(of: "{w}x{h}", with: "\(Int(size.width))x\(Int(size.height))"))
+    }
+    
+    public func nsImage(ofSize size: NSSize) -> NSImage? {
+        guard let url = url(forImageOfSize: size) else { return nil }
+        return NSImage(contentsOf: url)
     }
 }
 
@@ -425,11 +431,11 @@ public struct Recommendation: Decodable {
 /// [https://developer.apple.com/documentation/applemusicapi/artwork](https://developer.apple.com/documentation/applemusicapi/artwork)
 public struct Artwork: Codable {
     /// The maximum height available for the image.
-    public let height: Int?
+    let height: Int?
     /// The maximum width available for the image.
-    public let width: Int?
+    let width: Int?
     /// The URL to request the image asset. The image filename must be preceded by {w}x{h}, as placeholders for the width and height values as described above (for example, {w}x{h}bb.jpeg).
-    public let url: String?
+    let url: String?
     
     public init(height: Int?, width: Int?, url: String?) {
         self.height = height
@@ -437,12 +443,21 @@ public struct Artwork: Codable {
         self.url = url
     }
     
-    public func image(size: Int) -> NSImage? {
-        guard var urlString = url else { return nil }
-        urlString = urlString.replacingOccurrences(of: "{w}", with: size.description)
-            .replacingOccurrences(of: "{h}", with: size.description)
-        guard let imageURL = URL(string: urlString) else { return nil }
-        return NSImage(contentsOf: imageURL)
+    var maxSize: NSSize? {
+        guard let width = width,
+            let height = height else { return nil }
+        return NSSize(width: width, height: height)
+    }
+    
+    public func url(forImageOfSize size: NSSize) -> URL? {
+        guard let urlString = url else { return nil }
+        return URL(string: urlString
+            .replacingOccurrences(of: "{w}x{h}", with: "\(Int(size.width))x\(Int(size.height))"))
+    }
+    
+    public func nsImage(ofSize size: NSSize) -> NSImage? {
+        guard let url = url(forImageOfSize: size) else { return nil }
+        return NSImage(contentsOf: url)
     }
 }
 
