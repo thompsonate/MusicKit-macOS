@@ -1,6 +1,6 @@
 //
 //  Library.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 2/11/20.
 //  Copyright © 2020 Nate Thompson. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  NowPlayingManager.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 2/16/19.
 //  Copyright © 2019 Nate Thompson. All rights reserved.
@@ -14,45 +14,45 @@ enum RemoteCommandController {
     
     static func setup() {
         remoteCommandCenter.playCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-            MusicKit.shared.player.play()
+            MusicKitPlayer.shared.player.play()
             return .success
         }
         
         remoteCommandCenter.pauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-            MusicKit.shared.player.pause()
+            MusicKitPlayer.shared.player.pause()
             return .success
         }
         
         remoteCommandCenter.togglePlayPauseCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-            MusicKit.shared.player.getIsPlaying { isPlaying in
+            MusicKitPlayer.shared.player.getIsPlaying { isPlaying in
                 if isPlaying {
-                    MusicKit.shared.player.pause()
+                    MusicKitPlayer.shared.player.pause()
                 } else {
-                    MusicKit.shared.player.play()
+                    MusicKitPlayer.shared.player.play()
                 }
             }
             return .success
         }
         
         remoteCommandCenter.previousTrackCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-            MusicKit.shared.player.getCurrentPlaybackTime { playbackTime in
+            MusicKitPlayer.shared.player.getCurrentPlaybackTime { playbackTime in
                 if playbackTime < 2 {
-                    MusicKit.shared.player.skipToPreviousItem()
+                    MusicKitPlayer.shared.player.skipToPreviousItem()
                 } else {
-                    MusicKit.shared.player.seek(to: 0)
+                    MusicKitPlayer.shared.player.seek(to: 0)
                 }
             }
             return .success
         }
         
         remoteCommandCenter.nextTrackCommand.addTarget { _ -> MPRemoteCommandHandlerStatus in
-            MusicKit.shared.player.skipToNextItem()
+            MusicKitPlayer.shared.player.skipToNextItem()
             return .success
         }
         
         remoteCommandCenter.changePlaybackPositionCommand.addTarget { event -> MPRemoteCommandHandlerStatus in
             let event = event as! MPChangePlaybackPositionCommandEvent
-            MusicKit.shared.player.seek(to: event.positionTime)
+            MusicKitPlayer.shared.player.seek(to: event.positionTime)
             return .success
         }
     }
@@ -63,8 +63,8 @@ enum NowPlayingInfoManager {
     private static let infoCenter = MPNowPlayingInfoCenter.default()
     
     static func setup() {
-        MusicKit.shared.addEventListener(for: .playbackStateDidChange) {
-            MusicKit.shared.player.getPlaybackState(onSuccess: { state in
+        MusicKitPlayer.shared.addEventListener(for: .playbackStateDidChange) {
+            MusicKitPlayer.shared.player.getPlaybackState(onSuccess: { state in
                 switch state {
                 case .playing:
                     updateInfo()
@@ -93,9 +93,9 @@ enum NowPlayingInfoManager {
     private static func updateInfo() {
         var nowPlayingInfo = [String: Any]()
         
-        MusicKit.shared.player.getNowPlayingItem { nowPlayingItem in
-            MusicKit.shared.player.getCurrentPlaybackDuration { duration in
-                MusicKit.shared.player.getCurrentPlaybackTime { playbackTime in
+        MusicKitPlayer.shared.player.getNowPlayingItem { nowPlayingItem in
+            MusicKitPlayer.shared.player.getCurrentPlaybackDuration { duration in
+                MusicKitPlayer.shared.player.getCurrentPlaybackTime { playbackTime in
                     
                     nowPlayingInfo[MPMediaItemPropertyMediaType] = MPNowPlayingInfoMediaType.audio.rawValue
                     

@@ -1,6 +1,6 @@
 //
 //  MKWebpage.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 3/28/20.
 //

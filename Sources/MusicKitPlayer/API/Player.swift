@@ -1,6 +1,6 @@
 //
 //  Player.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 2/11/20.
 //  Copyright © 2020 Nate Thompson. All rights reserved.
@@ -153,9 +153,9 @@ open class Player {
         getPlaybackState { playbackState in
             switch playbackState {
             case .playing:
-                MusicKit.shared.player.pause()
+                MusicKitPlayer.shared.player.pause()
             case .paused, .stopped, .ended, .none:
-                MusicKit.shared.player.play()
+                MusicKitPlayer.shared.player.play()
             default:
                 break
             }

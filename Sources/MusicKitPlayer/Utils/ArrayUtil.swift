@@ -1,6 +1,6 @@
 //
 //  ArrayUtil.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 3/9/19.
 //  Copyright © 2019 Nate Thompson. All rights reserved.

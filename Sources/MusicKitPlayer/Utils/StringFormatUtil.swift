@@ -1,6 +1,6 @@
 //
 //  StringFormatUtil.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 2/4/19.
 //  Copyright © 2019 Nate Thompson. All rights reserved.

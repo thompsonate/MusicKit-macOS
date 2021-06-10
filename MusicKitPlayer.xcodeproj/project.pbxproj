@@ -11,7 +11,7 @@
 		43CBD2F6242F2F550023F7B7 /* MKWebpage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */; };
 		OBJ_37 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_12 /* API.swift */; };
 		OBJ_38 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_13 /* Library.swift */; };
-		OBJ_39 /* MusicKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* MusicKit.swift */; };
+		OBJ_39 /* MusicKitPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_14 /* MusicKitPlayer.swift */; };
 		OBJ_40 /* MusicKitUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_15 /* MusicKitUtils.swift */; };
 		OBJ_41 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_16 /* Player.swift */; };
 		OBJ_42 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_17 /* Queue.swift */; };
@@ -40,11 +40,11 @@
 /* Begin PBXFileReference section */
 		43ABBA8E24B599D30027CA77 /* URLRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestManager.swift; sourceTree = "<group>"; };
 		43CBD2F5242F2F550023F7B7 /* MKWebpage.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = MKWebpage.swift; sourceTree = "<group>"; tabWidth = 4; };
-		"MusicKit::MusicKit::Product" /* MusicKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MusicKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		"MusicKit::MusicKit::Product" /* MusicKitPlayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = MusicKitPlayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		OBJ_12 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		OBJ_13 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
-		OBJ_14 /* MusicKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKit.swift; sourceTree = "<group>"; };
+		OBJ_14 /* MusicKitPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitPlayer.swift; sourceTree = "<group>"; };
 		OBJ_15 /* MusicKitUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicKitUtils.swift; sourceTree = "<group>"; };
 		OBJ_16 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		OBJ_17 /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 		OBJ_27 /* StringFormatUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFormatUtil.swift; sourceTree = "<group>"; };
 		OBJ_31 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		OBJ_6 /* Package.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		OBJ_9 /* MusicKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicKit.h; sourceTree = "<group>"; };
+		OBJ_9 /* MusicKitPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MusicKitPlayer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +74,7 @@
 		OBJ_11 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_14 /* MusicKit.swift */,
+				OBJ_14 /* MusicKitPlayer.swift */,
 				OBJ_16 /* Player.swift */,
 				OBJ_17 /* Queue.swift */,
 				OBJ_12 /* API.swift */,
@@ -117,7 +117,7 @@
 		OBJ_29 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				"MusicKit::MusicKit::Product" /* MusicKit.framework */,
+				"MusicKit::MusicKit::Product" /* MusicKitPlayer.framework */,
 			);
 			name = Products;
 			sourceTree = BUILT_PRODUCTS_DIR;
@@ -135,31 +135,31 @@
 		OBJ_7 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_8 /* MusicKit */,
+				OBJ_8 /* MusicKitPlayer */,
 			);
 			name = Sources;
 			sourceTree = SOURCE_ROOT;
 		};
-		OBJ_8 /* MusicKit */ = {
+		OBJ_8 /* MusicKitPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				OBJ_9 /* MusicKit.h */,
+				OBJ_9 /* MusicKitPlayer.h */,
 				OBJ_10 /* Info.plist */,
 				OBJ_11 /* API */,
 				OBJ_18 /* Internal */,
 				OBJ_22 /* Managers */,
 				OBJ_25 /* Utils */,
 			);
-			name = MusicKit;
-			path = Sources/MusicKit;
+			name = MusicKitPlayer;
+			path = Sources/MusicKitPlayer;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		"MusicKit::MusicKit" /* MusicKit */ = {
+		"MusicKit::MusicKit" /* MusicKitPlayer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_33 /* Build configuration list for PBXNativeTarget "MusicKit" */;
+			buildConfigurationList = OBJ_33 /* Build configuration list for PBXNativeTarget "MusicKitPlayer" */;
 			buildPhases = (
 				OBJ_36 /* Sources */,
 				43CBD2F3242F07800023F7B7 /* CopyFiles */,
@@ -169,14 +169,14 @@
 			);
 			dependencies = (
 			);
-			name = MusicKit;
+			name = MusicKitPlayer;
 			productName = MusicKit;
-			productReference = "MusicKit::MusicKit::Product" /* MusicKit.framework */;
+			productReference = "MusicKit::MusicKit::Product" /* MusicKitPlayer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		"MusicKit::SwiftPMPackageDescription" /* MusicKitPackageDescription */ = {
+		"MusicKit::SwiftPMPackageDescription" /* MusicKitPlayerPackageDescription */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = OBJ_52 /* Build configuration list for PBXNativeTarget "MusicKitPackageDescription" */;
+			buildConfigurationList = OBJ_52 /* Build configuration list for PBXNativeTarget "MusicKitPlayerPackageDescription" */;
 			buildPhases = (
 				OBJ_55 /* Sources */,
 			);
@@ -184,7 +184,7 @@
 			);
 			dependencies = (
 			);
-			name = MusicKitPackageDescription;
+			name = MusicKitPlayerPackageDescription;
 			productName = MusicKitPackageDescription;
 			productType = "com.apple.product-type.framework";
 		};
@@ -197,7 +197,7 @@
 				LastSwiftMigration = 9999;
 				LastUpgradeCheck = 9999;
 			};
-			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "MusicKit" */;
+			buildConfigurationList = OBJ_2 /* Build configuration list for PBXProject "MusicKitPlayer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -209,8 +209,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				"MusicKit::MusicKit" /* MusicKit */,
-				"MusicKit::SwiftPMPackageDescription" /* MusicKitPackageDescription */,
+				"MusicKit::MusicKit" /* MusicKitPlayer */,
+				"MusicKit::SwiftPMPackageDescription" /* MusicKitPlayerPackageDescription */,
 			);
 		};
 /* End PBXProject section */
@@ -222,7 +222,7 @@
 			files = (
 				OBJ_37 /* API.swift in Sources */,
 				OBJ_38 /* Library.swift in Sources */,
-				OBJ_39 /* MusicKit.swift in Sources */,
+				OBJ_39 /* MusicKitPlayer.swift in Sources */,
 				OBJ_40 /* MusicKitUtils.swift in Sources */,
 				OBJ_41 /* Player.swift in Sources */,
 				OBJ_42 /* Queue.swift in Sources */,
@@ -285,20 +285,20 @@
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = MusicKit.xcodeproj/MusicKit_Info.plist;
+				INFOPLIST_FILE = MusicKitPlayer.xcodeproj/MusicKit_Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 0.1;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = MusicKit;
+				PRODUCT_BUNDLE_IDENTIFIER = MusicKitPlayer;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
-				TARGET_NAME = MusicKit;
+				TARGET_NAME = MusicKitPlayer;
 			};
 			name = Debug;
 		};
@@ -311,20 +311,20 @@
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = MusicKit.xcodeproj/MusicKit_Info.plist;
+				INFOPLIST_FILE = MusicKitPlayer.xcodeproj/MusicKit_Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) $(TOOLCHAIN_DIR)/usr/lib/swift/macosx";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MARKETING_VERSION = 0.1;
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = MusicKit;
+				PRODUCT_BUNDLE_IDENTIFIER = MusicKitPlayer;
 				PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
 				SWIFT_VERSION = 5.0;
-				TARGET_NAME = MusicKit;
+				TARGET_NAME = MusicKitPlayer;
 			};
 			name = Release;
 		};
@@ -357,6 +357,7 @@
 			buildSettings = {
 				LD = /usr/bin/true;
 				OTHER_SWIFT_FLAGS = "-swift-version 5 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2 -target x86_64-apple-macosx10.10 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -package-description-version 5.1";
+				PRODUCT_NAME = MusicKitPlayerPackageDescription;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -366,6 +367,7 @@
 			buildSettings = {
 				LD = /usr/bin/true;
 				OTHER_SWIFT_FLAGS = "-swift-version 5 -I $(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2 -target x86_64-apple-macosx10.10 -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk -package-description-version 5.1";
+				PRODUCT_NAME = MusicKitPlayerPackageDescription;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -373,7 +375,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		OBJ_2 /* Build configuration list for PBXProject "MusicKit" */ = {
+		OBJ_2 /* Build configuration list for PBXProject "MusicKitPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				OBJ_3 /* Debug */,
@@ -382,7 +384,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_33 /* Build configuration list for PBXNativeTarget "MusicKit" */ = {
+		OBJ_33 /* Build configuration list for PBXNativeTarget "MusicKitPlayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				OBJ_34 /* Debug */,
@@ -391,7 +393,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		OBJ_52 /* Build configuration list for PBXNativeTarget "MusicKitPackageDescription" */ = {
+		OBJ_52 /* Build configuration list for PBXNativeTarget "MusicKitPlayerPackageDescription" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				OBJ_53 /* Debug */,

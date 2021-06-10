@@ -1,6 +1,6 @@
 //
 //  MKDecoder.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 3/23/20.
 //  Copyright © 2020 Nate Thompson. All rights reserved.
@@ -140,7 +140,7 @@ struct EnhancedDecodingError: Error, CustomStringConvertible {
     }
     
     func logIfNeeded() {
-        if MusicKit.shared.enhancedErrorLogging {
+        if MusicKitPlayer.shared.enhancedErrorLogging {
             NSLog(self.description)
         }
     }

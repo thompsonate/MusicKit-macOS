@@ -1,6 +1,6 @@
 //
-//  MusicKit.swift
-//  MusicKit
+//  MusicKitPlayer.swift
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 2/10/20.
 //  Copyright © 2020 Nate Thompson. All rights reserved.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-open class MusicKit {
+open class MusicKitPlayer {
     
-    static public var shared = MusicKit()
+    static public var shared = MusicKitPlayer()
     private var mkWebController = MKWebController()
     
     public var player: Player

@@ -1,6 +1,6 @@
 //
 //  URLRequestManager.swift
-//  MusicKit
+//  MusicKitPlayer
 //
 //  Created by Nate Thompson on 7/8/20.
 //
@@ -18,8 +18,8 @@ class URLRequestManager {
         onSuccess: @escaping (T, Metadata?) -> Void,
         onError: @escaping (Error) -> Void)
     {
-        MusicKit.shared.getDeveloperToken(onSuccess: { developerToken in
-            MusicKit.shared.getUserToken(onSuccess: { userToken in
+        MusicKitPlayer.shared.getDeveloperToken(onSuccess: { developerToken in
+            MusicKitPlayer.shared.getUserToken(onSuccess: { userToken in
                                 
                 if requiresUserToken && userToken == nil {
                     onError(MKError.requestFailed(underlyingError: URLRequestError.requiresUserToken))
