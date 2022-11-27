@@ -307,7 +307,7 @@ public struct LibraryPlaylist: Codable {
     public struct Attributes: Codable {
         public let artwork: Artwork?
         public let canEdit: Bool
-        public let dateAdded: String
+        public let dateAdded: String?
         public let description: Description?
         public let hasCatalog: Bool
         public let name: String
